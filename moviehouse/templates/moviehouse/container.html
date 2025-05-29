@@ -7,8 +7,8 @@
   
   <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
     <div class="max-w-2xl">
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-        {{ movie.title }}
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight"><a href="{% url 'movie-detail' movie.id movie.title|slugify%}">
+        {{ movie.title }}</a>
         
       </h1>
       <p class="text-lg sm:text-xl text-gray-200 mb-6 leading-relaxed font-light">
@@ -27,9 +27,9 @@
         </span>
       </div>
       <div class="flex flex-wrap gap-4">
-        <button class="bg-white text-black px-8 py-3 rounded-lg font-semibold flex items-center hover:bg-gray-200 transition-colors duration-200">
+        <a href="{% url 'movie-detail' movie.id movie.title|slugify%}"><button class="bg-white text-black px-8 py-3 rounded-lg font-semibold flex items-center hover:bg-gray-200 transition-colors duration-200">
           <i class="fas fa-play mr-2"></i>Play Now
-        </button>
+        </button></a>
         <button class="bg-gray-600/80 text-white px-8 py-3 rounded-lg font-semibold flex items-center hover:bg-gray-600 transition-colors duration-200">
           <i class="fas fa-plus mr-2"></i>My List
         </button>
@@ -56,13 +56,15 @@
         {% for movie in results|slice:":10" %}
         <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
           <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
-            <h3 class="text-white font-semibold w-8 text-sm mb-1 break-word">{{ movie.title }}</h3>
+            <h3 class="text-white font-semibold w-8 text-sm mb-1 break-word"><a href="{% url 'movie-detail' movie.id movie.title|slugify %}">{{ movie.title }}</a></h3>
             <div class="flex items-center gap-2">
               <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average }}</span>
               <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
             </div>
           </div>
         </div>
+      
+        
         {% endfor %}
         
   </div>
@@ -80,15 +82,16 @@
     <!-- [28 = Action] For more: https://www.themoviedb.org/talk/5daf6eb0ae36680011d7e6ee -->
         <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
           <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
-            <h3 class="text-white font-semibold w-8 text-sm mb-1">{{ movie.title }}</h3>
+            <h3 class="text-white font-semibold w-8 text-sm mb-1"><a href="{% url 'movie-detail' movie.id movie.title|slugify%}">{{ movie.title }}</a></h3>
             <div class="flex items-center gap-2">
               <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average }}</span>
               <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
             </div>
           </div>
       </div>
+      
         {% endfor %}
-        
+      
       </div>
     </section>
 
@@ -102,15 +105,16 @@
         {% for movie in results|movie_filter_10:35 %}
         <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
           <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
-            <h3 class="text-white font-semibold w-8 text-sm mb-1">{{ movie.title }}</h3>
+            <h3 class="text-white font-semibold w-8 text-sm mb-1"><a href="{% url 'movie-detail' movie.id movie.title|slugify%}">{{ movie.title }}</a></h3>
             <div class="flex items-center gap-2">
               <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average }}</span>
               <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
             </div>
           </div>
         </div>
+
         {% endfor %}
-        
+
         </div>
     </section>
 
@@ -124,13 +128,14 @@
         {% for movie in results|movie_filter_10:27 %}
         <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
           <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
-            <h3 class="text-white font-semibold w-8 text-sm mb-1">{{ movie.title }}</h3>
+            <h3 class="text-white font-semibold w-8 text-sm mb-1"><a href="{% url 'movie-detail' movie.id movie.title|slugify%}">{{ movie.title }}</a></h3>
             <div class="flex items-center gap-2">
               <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average }}</span>
               <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
             </div>
           </div>
         </div>
+        
         {% endfor %}
         </div>
     </section>
@@ -145,7 +150,7 @@
         {% for movie in results|movie_filter_10:878 %}
         <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
           <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
-            <h3 class="text-white font-semibold w-8 text-sm mb-1">{{ movie.title }}</h3>
+            <h3 class="text-white font-semibold w-8 text-sm mb-1"><a href="{% url 'movie-detail' movie.id movie.title|slugify%}">{{ movie.title }}</a></h3>
             <div class="flex items-center gap-2">
               <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average }}</span>
               <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
@@ -155,6 +160,5 @@
         {% endfor %}
       </div>
     </section>
-  </div>
   </div>
 </main>

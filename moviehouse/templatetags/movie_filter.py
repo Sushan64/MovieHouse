@@ -1,5 +1,6 @@
 from django import template
 import random
+from django.utils.text import slugify
 
 register = template.Library()
 
@@ -20,4 +21,12 @@ def random_filter(movies):
 
 @register.filter(name="get_item")
 def get_item(dict, key):
+    if not key:
+        return dict
     return dict.get(key)
+
+
+@register.filter(name="slugify")
+def slugify_title(title):
+    slug = slugify(title)
+    return slug

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load movie_filter %}
+{% block container %}
+<h1 class="text-white">Search: {{ query }}</h1>
+{% if movies %}
+  <ul>
+    {% for movie in movies %}
+      <li>
+        <a class="text-white" href="{% url 'movie-detail' movie.id movie.title|slugify %}">
+          {{ movie.title }} ({{ movie.release_date|slice:":4" }})
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="text-white">No movies found.</p>
+{% endif %}
+
+{% endblock %}

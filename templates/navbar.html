@@ -109,6 +109,23 @@
         height: 270px;
       }
     }
+  
+  .video-responsive-wrapper {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      padding-top: 56.25%; // 16:9 Aspect Ratio
+    }
+    
+    .video-responsive-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+    }
   </style>
 
 
@@ -202,13 +219,13 @@
     <!-- Search Bar (Hidden by default) -->
     <div id="searchBar" class="hidden border-t border-gray-700/50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="relative">
-          <input type="text" placeholder="Search movies, shows, actors..." class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+        <form method="get" action="{% url 'search' %}" class="relative">
+          <input type="text" placeholder="Search movies, shows, actors..." class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" name="search" id="search">
           <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
           <button id="closeSearch" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-200">
             <i class="fas fa-times"></i>
           </button>
-        </div>
+        </form>
       </div>
     </div>
   </nav>
@@ -270,8 +287,10 @@
   
   <!-- Backdrop -->
   <div id="backdrop" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 invisible transition-all duration-300"></div>
-  
+
+
   <script>
+    // Navbar JavaScript
     // Mobile menu functionality
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const closeMobileMenu = document.getElementById('closeMobileMenu');
@@ -321,4 +340,5 @@ searchBar.classList.add('fade-in');
         toggleSearch();
       }
     });
+    //---- End Navbar JavaScript ----
   </script>
