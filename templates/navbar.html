@@ -137,7 +137,7 @@
         <!-- Logo -->
         <div class="flex-shrink-0">
           <h1 class="text-white text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
-            <i class="fas fa-film mr-2 text-blue-400"></i>MovieHub
+            <i class="fas fa-film mr-2 text-blue-400"></i><a href="{% url 'home' %}">MovieHub</a>
           </h1>
         </div>
         
@@ -154,25 +154,25 @@
               <!-- Dropdown Menu -->
               <div class="absolute left-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                 <div class="glass-effect rounded-lg shadow-lg border border-gray-700/50 py-2">
-                  <a href="#" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                  <a href="{% url 'category' 28 'Action' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
                     <i class="fas fa-fist-raised text-red-400 mr-3 w-4"></i>Action
                   </a>
-                  <a href="#" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                  <a href="{% url 'category' 35 'comedy' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
                     <i class="fas fa-laugh text-yellow-400 mr-3 w-4"></i>Comedy
                   </a>
-                  <a href="#" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                  <a href="{% url 'category' 16 'adventure' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
                     <i class="fas fa-mountain text-green-400 mr-3 w-4"></i>Adventure
                   </a>
-                  <a href="#" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                  <a href="{% url 'category' 10749 'romance' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
                     <i class="fas fa-heart text-pink-400 mr-3 w-4"></i>Romance
                   </a>
-                  <a href="#" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                  <a href="{% url 'category' 27 'horror' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
                     <i class="fas fa-ghost text-purple-400 mr-3 w-4"></i>Horror
                   </a>
-                  <a href="#" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                  <a href="{% url 'category' 878 'sci-fi' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
                     <i class="fas fa-rocket text-blue-400 mr-3 w-4"></i>Sci-Fi
                   </a>
-                  <a href="#" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                  <a href="{% url 'category' 18 'drama' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
                     <i class="fas fa-theater-masks text-indigo-400 mr-3 w-4"></i>Drama
                   </a>
                 </div>
@@ -242,25 +242,25 @@
             <div>
               <h3 class="text-gray-400 text-sm font-semibold uppercase tracking-wider mb-3">Categories</h3>
               <div class="space-y-2">
-                <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                <a href="{% url 'category' 28 'action' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
                   <i class="fas fa-fist-raised text-red-400 mr-3 w-5"></i>Action
                 </a>
-                <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                <a href="{% url 'category' 35 'comedy' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
                   <i class="fas fa-laugh text-yellow-400 mr-3 w-5"></i>Comedy
                 </a>
-                <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                <a href="{% url 'category' 16 'adventure' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
                   <i class="fas fa-mountain text-green-400 mr-3 w-5"></i>Adventure
                 </a>
-                <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                <a href="{% url 'category' 10749 'romance' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
                   <i class="fas fa-heart text-pink-400 mr-3 w-5"></i>Romance
                 </a>
-                <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                <a href="{% url 'category' 27 'horror' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
                   <i class="fas fa-ghost text-purple-400 mr-3 w-5"></i>Horror
                 </a>
-                <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                <a href="{% url 'category' 878 'sci-fi' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
                   <i class="fas fa-rocket text-blue-400 mr-3 w-5"></i>Sci-Fi
                 </a>
-                <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                <a href="{% url 'category' 18 'drama' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
                   <i class="fas fa-theater-masks text-indigo-400 mr-3 w-5"></i>Drama
                 </a>
               </div>
