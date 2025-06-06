@@ -1,0 +1,34 @@
+{% load movie_filter %}
+{% if pagination.total_pages > 1 %}
+  <div class="flex justify-center items-center mt-8 space-x-2">
+  {% if pagination.has_previous %}
+        <a href="?{% if request.GET %}{{ request.GET|preserve_query }}&{% else %}?{% endif %}page={{ pagination.previous_page }}" 
+           class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"><i class="fas fa-chevron-left"></i>
+        </a>
+    {% else %}
+        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg cursor-not-allowed"><i class="fas fa-chevron-left"></i></span>
+  {% endif %}
+    {% endif %}
+      
+{% for page_num in pagination.page_range %}
+        {% if page_num == pagination.current_page %}
+            <span class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">
+                {{ page_num }}
+            </span>
+        {% else %}
+            <a href="?{% if request.GET %}{{ request.GET|preserve_query }}&{% else %}?{% endif %}page={{ page_num }}" 
+               class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                {{ page_num }}
+            </a>
+        {% endif %}
+    {% endfor %}
+    
+    <!-- Next Button -->
+    {% if pagination.has_next %}
+        <a href="{% if request.GET %}?{{ request.GET|preserve_query }}&{% else %}?{% endif %}page={{ pagination.next_page }}" 
+           class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"><i class="fas fa-chevron-right"></i>
+        </a>
+    {% else %}
+        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg cursor-not-allowed"><i class="fas fa-chevron-right"></i></span>
+{% endif %}
+    

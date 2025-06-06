@@ -1,0 +1,73 @@
+<footer class="glass-effect text-gray-300 border-t border-gray-700/50 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+        
+        <!-- Column 1: About Site -->
+        <div>
+          <h3 class="text-xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+            <i class="fas fa-film mr-2 text-blue-400"></i>MovieHub
+          </h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Your ultimate destination for discovering and exploring movies. Find ratings, reviews, trailers, and more from a vast collection.
+          </p>
+        </div>
+        
+        <!-- Column 2: Quick Links -->
+        <div>
+          <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            
+            <li><a href="{% url 'industries' 'popular' %}" class="footer-link hover:text-white transition-colors duration-200">Most Popular</a></li>
+            <li><a href="{% url 'post' slug='about-us' %}" class="footer-link hover:text-white transition-colors duration-200">About Us</a></li>
+          </ul>
+        </div>
+        
+        <!-- Column 3: Categories -->
+        <div>
+          <h4 class="text-lg font-semibold text-white mb-4">Top Categories</h4>
+          <ul class="space-y-2">
+            <li><a href="{% url 'industries' 'hollywood' %}" class="footer-link hover:text-white transition-colors duration-200">Hollywood</a></li>
+            <li><a href="{% url 'industries' 'bollywood' %}" class="footer-link hover:text-white transition-colors duration-200">Bollywood</a></li>
+            <li><a href="{% url 'category' 28 'action' %}" class="footer-link hover:text-white transition-colors duration-200">Action</a></li>
+            <li><a href="{% url 'category' 35 'comedy' %}" class="footer-link hover:text-white transition-colors duration-200">Comedy</a></li>
+            <li><a href="{% url 'category' 878 'Sci-Fi' %}" class="footer-link hover:text-white transition-colors duration-200">Sci-Fi</a></li>
+            <li><a href="{% url 'category' 27 'horror' %}" class="footer-link hover:text-white transition-colors duration-200">Horror</a></li>
+            <li><a href="{% url 'category' 18 'drama' %}" class="footer-link hover:text-white transition-colors duration-200">Drama</a></li>
+          </ul>
+        </div>
+        
+        <!-- Column 4: Legal & Social -->
+        <div>
+          <h4 class="text-lg font-semibold text-white mb-4">Connect & Legal</h4>
+          <ul class="space-y-2 mb-4">
+            <li><a href="#" class="footer-link hover:text-white transition-colors duration-200">Contact Us</a></li>
+            <li><a href="#" class="footer-link hover:text-white transition-colors duration-200">Privacy Policy</a></li>
+            <li><a href="{% url 'post' slug='disclaimer' %}" class="footer-link hover:text-white transition-colors duration-200">Disclaimer</a></li>
+            <li><a href="#" class="footer-link hover:text-white transition-colors duration-200">DMCA</a></li>
+          </ul>
+          <div class="flex space-x-4">
+            <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-facebook-f text-xl"></i></a>
+            <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-twitter text-xl"></i></a>
+            <a href="#" aria-label="Instagram" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-instagram text-xl"></i></a>
+            <a href="#" aria-label="Telegram" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-telegram-plane text-xl"></i></a>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Copyright & Disclaimer -->
+      <div class="border-t border-gray-700/50 pt-8 text-center">
+        <p class="text-sm text-gray-400">
+          © <span id="currentYear"></span> MovieHub. All Rights Reserved.
+        </p>
+        <p class="text-xs text-gray-500 mt-2">
+          Disclaimer: This site does not store any files on its server. All contents are provided by non-affiliated third parties.
+        </p>
+      </div>
+    </div>
+</footer>
+{% block javascript %}
+<script>
+document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
+{% endblock %}

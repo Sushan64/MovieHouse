@@ -16,6 +16,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -25,10 +26,8 @@ SECRET_KEY = 'django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ["REPLIT_DOMAINS"].split(',')
-CSRF_TRUSTED_ORIGINS = [
-    "https://" + domain for domain in os.environ["REPLIT_DOMAINS"].split(',')
-]
+ALLOWED_HOSTS = [".replit.dev", ".replit.app"]
+CSRF_TRUSTED_ORIGINS = ["https://*.replit.dev", "https://*.replit.app"]
 
 # Application definition
 
@@ -39,7 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'moviehouse',
+    'tailwind',
+    'froala_editor',
+    'widget_tweaks'
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
-# Only use clickjacking protection in deployments because the Development Web View uses
+# Only use clickjacking protection in deployments because the Development Web View uses 
 # iframes and needs to be a cross origin.
 if ("REPLIT_DEPLOYMENT" in os.environ):
     MIDDLEWARE.append('django.middleware.clickjacking.XFrameOptionsMiddleware')
@@ -60,7 +65,7 @@ ROOT_URLCONF = 'django_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,6 +80,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -85,27 +91,25 @@ DATABASES = {
     }
 }
 
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -118,12 +122,48 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+FROALA_EDITOR_OPTIONS = {
+    'toolbarButtons': ['paragraphFormat', 'fontSize', 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'color', 'backgroundColor', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'fullscreen', 'html'],
+    
+    'toolbarButtonsXS': ['paragraphFormat', 'fontSize', 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'color', 'backgroundColor', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'fullscreen', 'html'],
+    'toolbarButtonsSM': ['paragraphFormat', 'fontSize', 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'color', 'backgroundColor', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'fullscreen', 'html'],
+    'toolbarButtonsMD': ['paragraphFormat', 'fontSize', 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'color', 'backgroundColor', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'fullscreen', 'html'],
+    
+    'paragraphFormat': {
+        'N': 'Normal',
+        'H1': 'Heading 1', 
+        'H2': 'Heading 2',
+        'H3': 'Heading 3',
+        'H4': 'Heading 4',
+        'H5': 'Heading 5',
+        'H6': 'Heading 6'
+    },
+    'height': '100vh',
+    'width': '100%',
+    'toolbarSticky': False,
+}
+
+FROALA_UPLOAD_PATH = 'uploads/froala_editor/images/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TMDB_API_KEY = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMjRkMDU1NGUwZGE4NjdhZGMwN2NiMTlmNDExYTBlYyIsIm5iZiI6MTc0ODI0MDk5MS45MzcsInN1YiI6IjY4MzQwYTVmNWY2NDcwNTNlNzA1NTIzOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RRXStaFK8cRX1N26g69Qtl4GzmRS3Ebc0ygec1_kVCc'
+
+LOGIN_URL = '/accounts/login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/logout'

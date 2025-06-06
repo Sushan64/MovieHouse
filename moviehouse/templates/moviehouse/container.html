@@ -1,0 +1,108 @@
+{% load movie_filter %}
+<!-- Hero Section -->
+{% with results|random as movie %}
+<section class="hero-bg relative min-h-screen max-h-full flex items-center">
+  <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/20" style="background-image: url('https://image.tmdb.org/t/p/w780{{ movie.poster_path }}'); backgropund-repeat: no-repeat; background-size: cover; background-position:center;"></div>
+  <div class="absolute h-full w-full z-3 bg-gradient-to-t from-black to-transparent"></div>
+  
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="max-w-2xl">
+      <h1 class="cursor-pointer text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight"><a href="{% url 'movie-detail' movie.id movie.title|slugify%}">
+        {{ movie.title }}</a>
+        
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-200 mb-6 leading-relaxed font-light line-clamp-4">
+        {{ movie.overview }}
+      </p>
+      <div class="flex flex-wrap items-center gap-4 mb-8">
+        <span class="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-semibold">
+          <i class="fas fa-star mr-1"></i>{{ movie.vote_average|format_decimal }} IMDb
+        </span>
+        <span class="text-gray-300 text-sm">{{ movie.release_date|slice:":4" }}</span>
+        <span class="text-gray-300 text-sm">{% with movie.id|get_movie_by_id as movie_detail %}{{ movie_detail.runtime }}{% endwith %}min</span>
+        <span class="bg-red-600 text-white px-3 py-1 rounded text-sm">
+          {% for genre_id in movie.genre_ids %}
+          {{ genres_lookup|get_item:genre_id }}{% if not forloop.last %} / {% endif %}
+          {% endfor %}
+        </span>
+      </div>
+      <div class="flex flex-wrap gap-4">
+        <a href="{% url 'movie-detail' movie.id movie.title|slugify%}"><button class="cursor-pointer bg-white text-black px-8 py-3 rounded-lg font-semibold flex items-center hover:bg-gray-200 transition-colors duration-200">
+          <i class="fas fa-play mr-2"></i>Play Now
+        </button></a>
+       <!-- <button class="bg-gray-600/80 text-white px-8 py-3 rounded-lg font-semibold flex items-center hover:bg-gray-600 transition-colors duration-200">
+          <i class="fas fa-plus mr-2"></i>My List
+        </button>-->
+        <a href="{% url 'movie-detail' movie.id movie.title|slugify %}">
+        <button class="bg-transparent border-2 border-white/50 text-white px-8 py-3 rounded-lg font-semibold flex items-center hover:border-white hover:bg-white/10 transition-all duration-200">
+          <i class="fas fa-info-circle mr-2"></i>More Info
+        </button></a>
+      </div>
+      {% endwith %}
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<main class="bg-gradient-to-b from-black to-gray-900 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+
+    <!-- Popular/Bollywood/Hollywood -->
+    {% for industry in industries %}
+    {% with industries|get_item:industry as movies %}
+    <section>
+      <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white category-title">
+        <i class="{{ industry|category_icon }} mr-3"></i>{{ industry|capfirst }}{% if industry == "popular" %} Movies{% endif %}
+      </h2>
+        <a href="{% url 'industries' industry %}"><button class="cursor-pointer glass-effect text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition-all">More <i class="fas fa-arrow-right ml-2"></i>
+        </button></a>
+      </div>
+      <div class="scroll-container flex gap-4 overflow-x-auto pb-4">
+        {% for movie in movies|slice:":10" %}
+        <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
+          <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
+            <h3 class="cursor-pointer text-white font-semibold w-8 text-sm mb-1"><a href="{% url 'movie-detail' movie.id movie.title|slugify %}">{{ movie.title }}</a></h3>
+            <div class="flex items-center gap-2">
+              <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average|format_decimal }}</span>
+              <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
+            </div>
+          </div>
+      </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endwith %}
+{% endfor %}
+    
+<!-- Category Movie -->
+    {% for genre, movies in genre_movies.items %}
+    <section>
+      <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl sm:text-3xl font-bold category-title">
+        <i class="{{ genre|genre_icon }} mr-3"></i>{{ genre }}
+      </h2>
+        <a href="{% url 'category' genres_to_show|get_key:genre genre %}">
+        <button class="glass-effect text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition-all cursor-pointer">More <i class="fas fa-arrow-right ml-2"></i>
+        </button></a>
+      </div>
+      <div class="scroll-container flex gap-4 overflow-x-auto pb-4">
+
+        {% for movie in movies|slice:":10" %}
+    <!-- For more [genre id]: https://www.themoviedb.org/talk/5daf6eb0ae36680011d7e6ee -->
+        <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
+          <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
+            <h3 class="text-white font-semibold w-8 text-sm mb-1 cursor-pointer"><a href="{% url 'movie-detail' movie.id movie.title|slugify%}">{{ movie.title }}</a></h3>
+            <div class="flex items-center gap-2">
+              <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average|format_decimal }}</span>
+              <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
+            </div>
+          </div>
+      </div>
+        {% endfor %}
+      </div>
+    </section>
+{% endfor %}
+ 
+  </div>
+</main>

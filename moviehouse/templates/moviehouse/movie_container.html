@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load movie_filter %}
+{% block container %}
+<main class="pt-10 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- Top Section: Poster, Title, Info, Play Button -->
+  <section class="flex flex-col md:flex-row gap-6 md:gap-8 mb-8 md:mb-12 glass-effect p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-700/50">
+    <!-- Poster -->
+    <div class="flex-shrink-0 w-full mx-auto md:mx-0 md:w-auto max-w-[200px] sm:max-w-[250px] md:max-w-[300px] md:w-1/3 lg:w-1/4">
+      <!-- Placeholder Poster Image URL -->
+      <img src="{% if movie.poster_path %} https://image.tmdb.org/t/p/w500{{ movie.poster_path }}{% else %}/media/default.jpg {% endif %}" alt="{{ movie.title }}" class="rounded-lg shadow-lg w-full h-auto object-cover aspect-[2/3] hover-scale">
+    </div>
+
+    <!-- Info -->
+    <div class="flex-grow flex flex-col">
+      <!-- Movie Title -->
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3 category-title">
+        {{ movie.title }}
+      </h2>
+
+      <!-- Meta Info: Rating, Year, Duration, Genre -->
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3 sm:mb-4 text-sm sm:text-base">
+        <span class="text-yellow-400 flex items-center">
+          <i class="fas fa-star mr-1"></i> {{ movie.vote_average|format_decimal }}/10
+        </span>
+        <span class="text-gray-400">{{ movie.release_date|slice:":4" }}</span>
+        <span class="text-gray-400">{{ movie.runtime }}min</span>
+        <span class="inline-block bg-blue-600/30 text-blue-300 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">{% if movie.genres.0 %}
+    {{ movie.genres.0.name }}
+{% else %}
+   Unknown
+{% endif %}</span>
+        <span class="inline-block bg-purple-600/30 text-purple-300 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">{% if movie.genres.1 %}
+    {{ movie.genres.1.name }}
+{% else %}
+    Unknown
+{% endif %}</span>
+      </div>
+
+      <!-- Short Tagline/Intro -->
+      <p class="text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed line-clamp-3 md:line-clamp-4">
+        {{ movie.overview }}
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="mt-auto flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        <button id="playMovieBtn" class="telegram-btn text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-lg font-semibold flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-blue-500/50 w-full sm:w-auto">
+          <i class="fas fa-play mr-2"></i>Watch Now
+        </button>
+        <button class="glass-effect text-gray-300 hover:text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-lg font-semibold flex items-center justify-center transition-all duration-200 border border-gray-600 hover:border-blue-500 w-full sm:w-auto">
+          <i class="fas fa-plus mr-2"></i>Add to Watchlist
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Player Section (Initially Hidden) -->
+  <section id="videoPlayerSection" class="hidden mb-8 md:mb-12 glass-effect p-4 sm:p-6 rounded-xl shadow-2xl border border-gray-700/50">
+    <!-- Server Tabs -->
+    <div id="serverTabsContainer" class="flex items-center flex-wrap gap-2 sm:gap-3 mb-3 sm:mb-4 border-b border-gray-700/50 pb-3 sm:pb-4">
+      <button data-video-url="https://player.vidsrc.co/embed/movie/{{ movie.id }}?autoplay=true&autonext=true&nextbutton=true&poster=true&primarycolor=6C63FF&secondarycolor=9F9BFF&iconcolor=FFFFFF&fontcolor=FFFFFF&fontsize=16px&opacity=0.5&font=Poppins" class="server-tab-js px-3 py-2 sm:px-4 sm:py-2.5 rounded-md text-sm sm:text-base font-medium flex items-center transition-all duration-200 ease-in-out bg-slate-700/50 hover:bg-blue-600/30 border border-slate-600 hover:border-blue-500 text-gray-300 hover:text-white">
+        
+        <i class="fa-solid fa-server mr-1 sm:mr-2 text-red-500"></i>Server 1
+      </button>
+      <button data-video-url="https://vidsrc.in/embed/movie?tmdb={{ movie.id }}" class="server-tab-js px-3 py-2 sm:px-4 sm:py-2.5 rounded-md text-sm sm:text-base font-medium flex items-center transition-all duration-200 ease-in-out bg-slate-700/50 hover:bg-blue-600/30 border border-slate-600 hover:border-blue-500 text-gray-300 hover:text-white">
+        <i class="fa-solid fa-server mr-1 sm:mr-2 text-blue-400"></i>Server 2
+      </button>
+    </div>
+
+    <!-- Video Embed -->
+    <div class="video-responsive-wrapper rounded-lg overflow-hidden shadow-lg bg-black">
+      <iframe id="movieIframe" src=""
+        title="Movie Player"
+        frameborder="0"
+        scrolling="no"
+        fontsize=16
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="origin" 
+        allowfullscreen class="w-full h-full rounded-md"></iframe>
+      <!-- For self-hosted video: -->
+      <!-- <video id="movieVideo" controls class="w-full h-full rounded-md" src="your-licensed-movie.mp4"></video> -->
+    </div>
+  </section>
+
+  <!-- Description Section -->
+  <section class="mb-8 md:mb-12 glass-effect p-6 sm:p-8 rounded-xl shadow-xl border border-gray-700/50">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-3 sm:mb-4 category-title inline-block">Summery</h3>
+    <p class="text-gray-300 leading-relaxed text-sm sm:text-base">
+      {{ movie.overview }}
+    </p>
+  </section>
+
+  <!-- Cast Section -->
+  <section class="glass-effect p-6 sm:p-8 rounded-xl shadow-xl border border-gray-700/50">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6 category-title inline-block">Cast & Crew</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
+      <!-- Cast Member Card Example -->
+      {% for cast in casts|slice:":6" %}
+      <div class="text-center hover-scale group">
+        <img src="{% if cast.profile_path %} https://image.tmdb.org/t/p/w185{{ cast.profile_path }} {% else %}/media/unknown.jpg {% endif %}" alt="{{ cast.name }}" class="w-24 h-24 md:w-28 md:h-28 rounded-full mx-auto mb-2 object-cover border-2 border-transparent group-hover:border-blue-500 transition-all duration-300 shadow-lg">
+        <h4 class="text-white font-medium text-sm md:text-base">{{ cast.name }}</h4>
+        <p class="text-gray-400 text-xs md:text-sm">{{ cast.character }}</p>
+      </div>
+      {% endfor %}
+      <!-- Add more cast/crew cards as needed -->
+    </div>
+  </section>
+</main>
+
+
+{% endblock %}
+{% block javascript %}
+<script>
+const playMovieBtn = document.getElementById('playMovieBtn');
+    const videoPlayerSection = document.getElementById('videoPlayerSection');
+    const movieIframe = document.getElementById('movieIframe');
+    const serverTabs = document.querySelectorAll('.server-tab-js');
+    
+    const originalPlayBtnHTML = playMovieBtn ? playMovieBtn.innerHTML : '';
+    let currentActiveTab = serverTabs.length > 0 ? serverTabs[0] : null;
+    
+    const defaultTabClasses = ['bg-slate-700/50', 'hover:bg-blue-600/30', 'border-slate-600', 'hover:border-blue-500', 'text-gray-300', 'hover:text-white'];
+    const activeTabClasses = ['bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'text-white', 'border-transparent', 'shadow-lg', 'hover:from-blue-600', 'hover:to-purple-700'];
+    
+    function styleTabs(activeClickedTab) {
+      serverTabs.forEach(tab => {
+        tab.classList.remove(...activeTabClasses);
+        tab.classList.add(...defaultTabClasses);
+      });
+      if (activeClickedTab) {
+        activeClickedTab.classList.remove(...defaultTabClasses);
+        activeClickedTab.classList.add(...activeTabClasses);
+      }
+    }
+    
+    function loadVideoFromServer(tabElement) {
+      if (!tabElement) {
+        movieIframe.src = "";
+        styleTabs(null);
+        return;
+      }
+      const videoUrl = tabElement.dataset.videoUrl;
+      movieIframe.src = videoUrl || "";
+      currentActiveTab = tabElement;
+      styleTabs(tabElement);
+    }
+    
+    if (playMovieBtn && videoPlayerSection && movieIframe) {
+      playMovieBtn.addEventListener('click', () => {
+        if (videoPlayerSection.classList.contains('hidden')) {
+          videoPlayerSection.classList.remove('hidden');
+          videoPlayerSection.classList.add('fade-in');
+          playMovieBtn.innerHTML = '<i class="fas fa-pause mr-2"></i>Now Playing';
+          
+          if (currentActiveTab) {
+            loadVideoFromServer(currentActiveTab);
+          } else if (serverTabs.length > 0) {
+            loadVideoFromServer(serverTabs[0]); // Fallback to first tab if currentActiveTab is null
+          } else {
+            movieIframe.src = ""; // No tabs, no video
+          }
+          
+          const videoTop = videoPlayerSection.getBoundingClientRect().top + window.pageYOffset;
+          const navbarHeight = document.querySelector('nav.fixed')?.offsetHeight || 64;
+          window.scrollTo({ top: videoTop - navbarHeight - 20, behavior: 'smooth' });
+        } else {
+          videoPlayerSection.classList.add('hidden');
+          videoPlayerSection.classList.remove('fade-in');
+          playMovieBtn.innerHTML = originalPlayBtnHTML;
+          movieIframe.src = "";
+          
+          if (movieIframe.contentWindow) {
+            movieIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            movieIframe.contentWindow.postMessage('{"method":"pause"}', '*');
+          }
+        }
+      });
+    }
+    
+    serverTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        loadVideoFromServer(tab);
+      });
+    });
+</script>
+{% endblock %}

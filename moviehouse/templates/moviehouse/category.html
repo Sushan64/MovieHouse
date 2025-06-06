@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load movie_filter %}
+{% block container %}
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<h1 class="text-white font-bold text-3xl mb-4 pt-4">{% if genres_lookup|get_item:id %}
+  Category: {{ genres_lookup|get_item:id }}{% else %}No Category{% endif %}</h1>
+  <div class="md:grid md:grid-cols-2 md:gap-2">
+    {% if results %}
+    {% for movie in results %}
+ <div class="glass-effect rounded-xl shadow-2xl overflow-hidden flex flex-row hover-scale transition-all duration-300 ease-in-out mb-4">
+      <!-- Poster (Left Side) -->
+      <div class="flex-shrink-0 bg-slate-700/50 w-[90px] h-[135px] xs:w-[100px] xs:h-[150px] sm:w-[120px] sm:h-[180px] md:w-[140px] md:h-[210px] lg:w-[160px] lg:h-[240px] xl:w-[180px] xl:h-[270px]">
+       <a href="{% url 'movie-detail' movie.id movie.title|slugify %}"><img src="{% if movie.poster_path %}https://image.tmdb.org/t/p/w780{{ movie.poster_path }}{% else %}/media/default.jpg{% endif %}" alt="{{ movie.title }}" class="w-full h-full object-cover"> </a>
+      </div>
+
+      <!-- Details (Right Side) -->
+      <div class="p-3 xs:p-4 sm:p-5 flex flex-col flex-grow min-w-0"> <!-- min-w-0 for flex child truncation -->
+        <h2 class="font-bold text-white text-sm xs:text-base sm:text-lg md:text-xl mb-1 sm:mb-1.5 line-clamp-1 xxs:line-clamp-2 sm:line-clamp-2 leading-tight"> <!-- Adjust line-clamp for title -->
+          <a href="{% url 'movie-detail' movie.id movie.title|slugify %}">{{ movie.title }}</a>
+        </h2>
+        <p class="text-gray-300 text-xs xs:text-sm mb-2 sm:mb-3 line-clamp-2 md:line-clamp-3 leading-snug"> <!-- Tailwind's line-clamp -->
+          {{ movie.overview }}
+        </p>
+
+        <!-- Bottom section: Play button, Release Date, Rating -->
+        <div class="mt-auto flex flex-col xxs:flex-row xxs:items-center xxs:justify-between space-y-2 xxs:space-y-0 xxs:space-x-2">
+          <a href="{% url 'movie-detail' movie.id movie.title|slugify %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 text-[11px] xs:text-xs sm:py-2 sm:px-4 sm:text-sm rounded-md inline-flex items-center transition-colors duration-200 self-start xxs:self-center whitespace-nowrap">
+            <i class="fas fa-play mr-1.5 text-xs"></i>Play Now
+          </a>
+          <div class="flex items-center space-x-2 xs:space-x-3 text-gray-400 text-[10px] xs:text-xs self-start xxs:self-center">
+            <div class="flex items-center" title="Release Date">
+              <i class="fas fa-calendar-alt mr-1 text-sky-400"></i>
+              <span class="whitespace-nowrap">{{ movie.release_date|slice:":4" }}</span>
+            </div>
+            <div class="flex items-center" title="Rating">
+              <i class="fas fa-star mr-1 text-yellow-400"></i>
+              <span class="whitespace-nowrap">{{ movie.vote_average|format_decimal }}/10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+ </div>
+  {% endfor %}
+  </div>
+  {% include 'moviehouse/pagination.html' %}
+</main>
+{% else %}
+<p class="text-white">No movies found.</p>
+{% endif %}
+{% endblock %}

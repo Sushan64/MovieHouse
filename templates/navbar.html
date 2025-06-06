@@ -1,0 +1,344 @@
+<style>
+    .glass-effect {
+      background: rgba(17, 25, 40, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.125);
+    }
+
+  .hero-bg {
+      background: linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)),
+        url('https://images.unsplash.com/photo-1489599510737-5c7c5f9b5e7c?w=1920&h=1080&fit=crop') center/cover;
+    }
+    
+    .poster-card {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    .scroll-container {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    
+    .scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+  .category-title {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+  }
+    
+    .mobile-menu {
+      background: rgba(17, 25, 40, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .category-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    .search-input {
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .telegram-btn {
+      background: linear-gradient(135deg, #0088cc, #229ED9);
+    }
+    
+    .telegram-btn:hover {
+      background: linear-gradient(135deg, #006ba3, #1a7fb8);
+      transform: translateY(-1px);
+    }
+
+   .hover-scale {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-scale:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.1s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+     @media (max-width: 640px) {
+      .poster-card {
+        min-width: 140px;
+        height: 210px;
+      }
+    }
+    
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .poster-card {
+        min-width: 160px;
+        height: 240px;
+      }
+    }
+    
+    @media (min-width: 1025px) {
+      .poster-card {
+        min-width: 180px;
+        height: 270px;
+      }
+    }
+  
+  .video-responsive-wrapper {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      padding-top: 56.25%; // 16:9 Aspect Ratio
+    }
+    
+    .video-responsive-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+
+  <!-- Navbar -->
+  <nav class="glass-effect fixed w-full top-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo -->
+        <div class="flex-shrink-0">
+          <h1 class="text-white text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+            <i class="fas fa-film mr-2 text-blue-400"></i><a href="{% url 'home' %}">MovieHub</a>
+          </h1>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:block">
+          <div class="ml-10 flex items-baseline space-x-4">
+            <!-- Categories Dropdown -->
+            <div class="relative group">
+              <button class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors duration-200">
+                <i class="fas fa-list mr-2"></i>Categories
+                <i class="fas fa-chevron-down ml-1 text-xs transform group-hover:rotate-180 transition-transform duration-200"></i>
+              </button>
+              
+              <!-- Dropdown Menu -->
+              <div class="absolute left-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <div class="glass-effect rounded-lg shadow-lg border border-gray-700/50 py-2">
+                  <a href="{% url 'category' 28 'Action' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                    <i class="fas fa-fist-raised text-red-400 mr-3 w-4"></i>Action
+                  </a>
+                  <a href="{% url 'category' 35 'comedy' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                    <i class="fas fa-laugh text-yellow-400 mr-3 w-4"></i>Comedy
+                  </a>
+                  <a href="{% url 'category' 12 'adventure' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                    <i class="fas fa-mountain text-green-400 mr-3 w-4"></i>Adventure
+                  </a>
+                  <a href="{% url 'category' 10749 'romance' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                    <i class="fas fa-heart text-pink-400 mr-3 w-4"></i>Romance
+                  </a>
+                  <a href="{% url 'category' 27 'horror' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                    <i class="fas fa-ghost text-purple-400 mr-3 w-4"></i>Horror
+                  </a>
+                  <a href="{% url 'category' 878 'sci-fi' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                    <i class="fas fa-rocket text-blue-400 mr-3 w-4"></i>Sci-Fi
+                  </a>
+                  <a href="{% url 'category' 18 'drama' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+                    <i class="fas fa-theater-masks text-indigo-400 mr-3 w-4"></i>Drama
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- About Us -->
+            <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+              <i class="fas fa-info-circle mr-2"></i>About Us
+            </a>
+          </div>
+        </div>
+        
+        <!-- Desktop Right Side -->
+        <div class="hidden lg:flex items-center space-x-4">
+          <!-- Search -->
+          <div class="relative">
+            <button id="searchBtn" class="text-gray-300 hover:text-white p-2 rounded-md transition-colors duration-200">
+              <i class="fas fa-search text-lg"></i>
+            </button>
+          </div>
+          
+          <!-- Telegram Button -->
+          <a href="#" class="telegram-btn text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center transition-all duration-200 shadow-lg">
+            <i class="fab fa-telegram-plane mr-2"></i>Join Channel
+          </a>
+        </div>
+        
+        <!-- Mobile buttons -->
+        <div class="lg:hidden flex items-center space-x-3">
+          <!-- Mobile Search -->
+          <button id="mobileSearchBtn" class="text-gray-300 hover:text-white p-2 transition-colors duration-200">
+            <i class="fas fa-search text-lg"></i>
+          </button>
+          
+          <!-- Mobile menu button -->
+          <button id="mobileMenuBtn" class="text-gray-300 hover:text-white p-2 transition-colors duration-200">
+            <i class="fas fa-bars text-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Search Bar (Hidden by default) -->
+    <div id="searchBar" class="hidden border-t border-gray-700/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <form method="get" action="{% url 'search' %}" class="relative">
+          <input type="text" placeholder="Search movies, shows, actors..." class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" name="search" id="search">
+          <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+          <button id="closeSearch" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-200">
+            <i class="fas fa-times"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="lg:hidden fixed inset-0 z-40 transform translate-x-full transition-transform duration-300 ease-in-out pt-16">
+    <div class="mobile-menu h-full w-80 ml-auto shadow-xl">
+      <div class="flex flex-col h-full">
+        
+        <!-- Menu Items -->
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class="space-y-4">
+            <!-- Categories -->
+            <div>
+              <h3 class="text-gray-400 text-sm font-semibold uppercase tracking-wider mb-3">Categories</h3>
+              <div class="space-y-2">
+                <a href="{% url 'category' 28 'action' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                  <i class="fas fa-fist-raised text-red-400 mr-3 w-5"></i>Action
+                </a>
+                <a href="{% url 'category' 35 'comedy' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                  <i class="fas fa-laugh text-yellow-400 mr-3 w-5"></i>Comedy
+                </a>
+                <a href="{% url 'category' 12 'adventure' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                  <i class="fas fa-mountain text-green-400 mr-3 w-5"></i>Adventure
+                </a>
+                <a href="{% url 'category' 10749 'romance' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                  <i class="fas fa-heart text-pink-400 mr-3 w-5"></i>Romance
+                </a>
+                <a href="{% url 'category' 27 'horror' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                  <i class="fas fa-ghost text-purple-400 mr-3 w-5"></i>Horror
+                </a>
+                <a href="{% url 'category' 878 'sci-fi' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                  <i class="fas fa-rocket text-blue-400 mr-3 w-5"></i>Sci-Fi
+                </a>
+                <a href="{% url 'category' 18 'drama' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                  <i class="fas fa-theater-masks text-indigo-400 mr-3 w-5"></i>Drama
+                </a>
+              </div>
+            </div>
+            
+            <!-- About Us -->
+            <div class="pt-4 border-t border-gray-700/50">
+              <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+                <i class="fas fa-info-circle text-blue-400 mr-3 w-5"></i>About Us
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="p-6 border-t border-gray-700/50">
+          <a href="#" class="telegram-btn w-full text-white px-4 py-3 rounded-lg text-sm font-medium flex items-center justify-center transition-all duration-200 shadow-lg">
+            <i class="fab fa-telegram-plane mr-2"></i>Join Our Telegram Channel
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Backdrop -->
+  <div id="backdrop" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 invisible transition-all duration-300"></div>
+
+
+  <script>
+    // Navbar JavaScript
+    // Mobile menu functionality
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeMobileMenu = document.getElementById('closeMobileMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const backdrop = document.getElementById('backdrop');
+    
+    function toggleMobileMenu() {
+      if (mobileMenu.classList.contains('translate-x-full')) {
+        mobileMenu.classList.remove('translate-x-full');
+        backdrop.classList.remove('opacity-0', 'invisible');
+        document.body.style.overflow = 'hidden';
+      } else {
+        mobileMenu.classList.add('translate-x-full');
+        backdrop.classList.add('opacity-0', 'invisible');
+        document.body.style.overflow = 'auto';
+      }
+    }
+    
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    backdrop.addEventListener('click', toggleMobileMenu);
+    
+    // Search functionality
+    const searchBtn = document.getElementById('searchBtn');
+    const mobileSearchBtn = document.getElementById('mobileSearchBtn');
+    const searchBar = document.getElementById('searchBar');
+    const closeSearch = document.getElementById('closeSearch');
+    
+    function toggleSearch() {
+      if (searchBar.classList.contains('hidden')) {
+        searchBar.classList.remove('hidden');
+searchBar.classList.add('fade-in');
+        setTimeout(() => {
+          searchBar.querySelector('input').focus();
+        }, 100);
+      } else {
+        searchBar.classList.add('hidden');
+        searchBar.classList.remove('fade-in');
+      }
+    }
+    
+    searchBtn.addEventListener('click', toggleSearch);
+    mobileSearchBtn.addEventListener('click', toggleSearch);
+    closeSearch.addEventListener('click', toggleSearch);
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !searchBar.classList.contains('hidden')) {
+        toggleSearch();
+      }
+    });
+    //---- End Navbar JavaScript ----
+  </script>
