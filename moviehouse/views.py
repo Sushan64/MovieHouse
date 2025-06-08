@@ -240,45 +240,44 @@ def register(request):
 #--------------------
 @login_required
 def edit_profile(request):
-  user = request.user
-  profile, created = UserProfile.objects.get_or_create(user=user)
-  if request.method == "POST":
-    form = UserProfileForm(request.POST, request.FILES, instance=profile)
-    password_form = PasswordChangeForm(user, request.POST)
+    user = request.user
+    profile, created = UserProfile.objects.get_or_create(user=user)
     
-    if request.POST.get('form_type') =='profile':
-      if form.is_valid():
-        form.save()
-        user.first_name = request.POST.get('first_name', '')
-        user.last_name = request.POST.get('last_name', '')
-        user.save()
-        messages.success(request, 'Your account has been successful updated')
-        return redirect('profile')
-      else:
-        messages.error(request, "Something wrong! Couldn't update your profile" )
-    password_form = PasswordChangeForm(user)
-    elif request.POST.get('form_type') == 'password':
-      if password_form.is_valid():
-          password_form.save()
-          update_session_auth_hash(request, password_form.user)
-          messages.success(request, 'Password update successful')
-          return redirect('profile')
-        form = UserProfileForm(instance = profile)
-      else:
-          messages.error(request, "Something wrong! Couldn't update your password")
-    form = UserProfileForm(instance=profile)
-      
-  else:
-    form = UserProfileForm(instance=profile)
-    password_form = PasswordChangeForm(user)
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        password_form = PasswordChangeForm(user, request.POST)
+        
+        if request.POST.get('form_type') == 'profile':
+            if form.is_valid():
+                form.save()
+                user.first_name = request.POST.get('first_name', '')
+                user.last_name = request.POST.get('last_name', '')
+                user.save()
+                messages.success(request, 'Your account has been successfully updated')
+                return redirect('profile')
+            else:
+                messages.error(request, "Something went wrong! Couldn't update your profile")
+                
+        elif request.POST.get('form_type') == 'password':
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, password_form.user)
+                messages.success(request, 'Password update successful')
+                return redirect('profile')
+            else:
+                messages.error(request, "Something went wrong! Couldn't update your password")
+                
+    else:
+        form = UserProfileForm(instance=profile)
+        password_form = PasswordChangeForm(user)
 
-  context={
-    'form':form,
-    'first_name': user.first_name,
-    'last_name': user.last_name,
-    'password_form': password_form,
-  }
-  return render(request, 'profile/edit_profile.html', context)
+    context = {
+        'form': form,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'password_form': password_form,
+    }
+    return render(request, 'profile/edit_profile.html', context)
 
 #------------------
 def custom_login(request):
