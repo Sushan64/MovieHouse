@@ -1,5 +1,25 @@
 {% extends 'base.html' %}
 {% load movie_filter %}
+{% block head %}
+<style>
+  .video-responsive-wrapper {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      padding-top: 56.25%; // 16:9 Aspect Ratio
+    }
+    
+    .video-responsive-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+    }
+</style>
+{% endblock %}
 {% block container %}
 <main class="pt-10 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
   <!-- Top Section: Poster, Title, Info, Play Button -->
@@ -43,12 +63,13 @@
 
       <!-- Action Buttons -->
       <div class="mt-auto flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        
         <button id="playMovieBtn" class="telegram-btn text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-lg font-semibold flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-blue-500/50 w-full sm:w-auto">
           <i class="fas fa-play mr-2"></i>Watch Now
         </button>
-        <button class="glass-effect text-gray-300 hover:text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-lg font-semibold flex items-center justify-center transition-all duration-200 border border-gray-600 hover:border-blue-500 w-full sm:w-auto">
+      <!--  <button class="glass-effect text-gray-300 hover:text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg text-base sm:text-lg font-semibold flex items-center justify-center transition-all duration-200 border border-gray-600 hover:border-blue-500 w-full sm:w-auto">
           <i class="fas fa-plus mr-2"></i>Add to Watchlist
-        </button>
+        </button>-->
       </div>
     </div>
   </section>
@@ -57,7 +78,7 @@
   <section id="videoPlayerSection" class="hidden mb-8 md:mb-12 glass-effect p-4 sm:p-6 rounded-xl shadow-2xl border border-gray-700/50">
     <!-- Server Tabs -->
     <div id="serverTabsContainer" class="flex items-center flex-wrap gap-2 sm:gap-3 mb-3 sm:mb-4 border-b border-gray-700/50 pb-3 sm:pb-4">
-      <button data-video-url="https://player.vidsrc.co/embed/movie/{{ movie.id }}?autoplay=true&autonext=true&nextbutton=true&poster=true&primarycolor=6C63FF&secondarycolor=9F9BFF&iconcolor=FFFFFF&fontcolor=FFFFFF&fontsize=16px&opacity=0.5&font=Poppins" class="server-tab-js px-3 py-2 sm:px-4 sm:py-2.5 rounded-md text-sm sm:text-base font-medium flex items-center transition-all duration-200 ease-in-out bg-slate-700/50 hover:bg-blue-600/30 border border-slate-600 hover:border-blue-500 text-gray-300 hover:text-white">
+      <button data-video-url="https://player.vidsrc.co/embed/movie/{{ movie.id }}?autoplay=true&autonext=true&nextbutton=true&poster=true&primarycolor=6C63FF&secondarycolor=9F9BFF&iconcolor=FFFFFF&fontcolor=FFFFFF&fontsize=16px&opacity=0.5&font=Poppins&autoplay=0" class="server-tab-js px-3 py-2 sm:px-4 sm:py-2.5 rounded-md text-sm sm:text-base font-medium flex items-center transition-all duration-200 ease-in-out bg-slate-700/50 hover:bg-blue-600/30 border border-slate-600 hover:border-blue-500 text-gray-300 hover:text-white">
         
         <i class="fa-solid fa-server mr-1 sm:mr-2 text-red-500"></i>Server 1
       </button>
@@ -77,7 +98,7 @@
         referrerpolicy="origin" 
         allowfullscreen class="w-full h-full rounded-md"></iframe>
       <!-- For self-hosted video: -->
-      <!-- <video id="movieVideo" controls class="w-full h-full rounded-md" src="your-licensed-movie.mp4"></video> -->
+      <!-- <video id="movieVideo" controls class="w-full h-full rounded-md" src="movie.mp4"></video> -->
     </div>
   </section>
 
@@ -146,6 +167,7 @@ const playMovieBtn = document.getElementById('playMovieBtn');
     
     if (playMovieBtn && videoPlayerSection && movieIframe) {
       playMovieBtn.addEventListener('click', () => {
+       /* {% if request.user.is_authenticated %}*/
         if (videoPlayerSection.classList.contains('hidden')) {
           videoPlayerSection.classList.remove('hidden');
           videoPlayerSection.classList.add('fade-in');
@@ -173,6 +195,12 @@ const playMovieBtn = document.getElementById('playMovieBtn');
             movieIframe.contentWindow.postMessage('{"method":"pause"}', '*');
           }
         }
+        /*
+          {% else %}
+        const loginUrl = "{% url 'login' %}"
+        const currentPath = window.location.pathname + window.location.search;
+        window.location.href = `{% url 'login' %}?next=${encodeURIComponent(currentPath)}`;
+  {% endif %}*/
       });
     }
     

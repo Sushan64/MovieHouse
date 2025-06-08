@@ -1,11 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils.text import slugify
 from django.conf import settings
-from .models import Post
-from .forms import PostForm, UserRegistrationForm
+from .models import Post, UserProfile
+from .forms import PostForm, UserRegistrationForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
+from django.contrib import messages
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.forms import PasswordChangeForm
 
 #API
 import requests
@@ -131,6 +134,7 @@ def home(request):
 
 #------------------------
 
+@login_required
 def movie_content(request, movie_id, slug):
   
   movie = get_movie_by_id(movie_id)
@@ -209,6 +213,7 @@ def create_post(request):
     if form.is_valid():
       post = form.save(commit=False)
       post.save()
+      messages.success(request, 'Post Successful!')
       return redirect('post', slug=post.slug )
   else:
     form = PostForm()
@@ -217,6 +222,8 @@ def create_post(request):
 
 #-------------------
 def register(request):
+  if request.user.is_authenticated:
+    return redirect('profile')
   if request.method == "POST":
     form = UserRegistrationForm(request.POST)
     if form.is_valid():
@@ -224,16 +231,76 @@ def register(request):
       user.set_password(form.cleaned_data["password1"])
       user.save()
       login(request, user)
-      return redirect('registered')
+      messages.success(request, f"Your account has been created! You are now loged in")
+      return redirect('profile')
   else:
     form = UserRegistrationForm()
   return render(request, "registration/register.html", {'form': form })
 
-#-------------------
+#--------------------
 @login_required
-def registered(request):
-  return render(request, "registration/registered.html")
+def edit_profile(request):
+  user = request.user
+  profile, created = UserProfile.objects.get_or_create(user=user)
+  if request.method == "POST":
+    form = UserProfileForm(request.POST, request.FILES, instance=profile)
+    password_form = PasswordChangeForm(user, request.POST)
+    
+    if request.POST.get('form_type') =='profile':
+      if form.is_valid():
+        form.save()
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.save()
+        messages.success(request, 'Your account has been successful updated')
+        return redirect('profile')
+      else:
+        messages.error(request, "Something wrong! Couldn't update your profile" )
+    elif request.POST.get('form_type') == 'password':
+      if password_form.is_valid():
+          password_form.save()
+          update_session_auth_hash(request, password_form.user)
+          messages.success(request, 'Password update successful')
+          return redirect('profile')
+      else:
+          messages.error(request, "Something wrong! Couldn't update your password")
+      
+  else:
+    form = UserProfileForm(instance=profile)
+    password_form = PasswordChangeForm(user)
+
+  context={
+    'form':form,
+    'first_name': user.first_name,
+    'last_name': user.last_name,
+    'password_form': password_form,
+  }
+  return render(request, 'profile/edit_profile.html', context)
 
 #------------------
+def custom_login(request):
+  if request.user.is_authenticated:
+    return redirect('profile')
+  if request.method == "POST":
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+      login(request, user)
+      messages.success(request, f'Welcome back! {user}')
+      return redirect(request.GET.get('next', '/'))
+    else:
+      messages.error(request, 'Invalid username or password')
+  return render(request, 'registration/login.html')
+
+#----------------------
+def custom_logout(request):
+  if request.method == "POST":
+    logout(request)
+    messages.success(request, 'You have been successfully logged out')
+    return redirect('login')
+  return redirect('profile')
+
+#---------------------
 def custom_404_view(request, exception):
   return render(request, "moviehouse/404.html", status=404)

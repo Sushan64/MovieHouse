@@ -1,0 +1,47 @@
+{% if request.user.is_authenticated %}
+          <a href="{% url 'profile' %}" class="block rounded-full transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+    <span class="sr-only">View profile</span>
+    <img class="h-5.5 w-5.5 rounded-full object-cover" 
+         src="{% if request.user.userprofile.pp %}{{ request.user.userprofile.pp.url }}{% else %}/media/unknown.jpg{% endif %}" 
+         alt="User profile picture">
+          </a>
+          {% else %}
+<div class="relative">
+  <button id="guestProfileBtn-{{ device }}" class="text-gray-300 hover:text-white p-2 transition-colors duration-200">
+  <span class="sr-only">Open user menu</span>
+  <i class="fas fa-user-circle text-xl"></i>
+  </button>
+            <!-- Dropdown Menu -->
+  <div id="guestProfileMenu-{{ device }}" class="hidden absolute right-0 mt-2 w-48 origin-top-right z-50 fade-in">
+    <div class="glass-effect rounded-lg shadow-lg border border-gray-700/50 py-2">
+       <a href="{% url 'login' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+        <i class="fas fa-sign-in-alt mr-3 w-4 text-green-400"></i>Login
+         </a>
+         <a href="{% url 'register' %}" class="category-item flex items-center px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-200">
+          <i class="fas fa-user-plus mr-3 w-4 text-blue-400"></i>Register
+           </a>
+        </div>
+    </div>
+</div>
+
+<script>
+          document.addEventListener('DOMContentLoaded', () => {
+          {
+    const guestProfileBtn = document.getElementById('guestProfileBtn-{{ device }}');
+    const guestProfileMenu = document.getElementById('guestProfileMenu-{{ device }}');
+        if (guestProfileBtn && guestProfileMenu) {
+            guestProfileBtn.addEventListener('click', (event) => {
+                      event.stopPropagation(); 
+                guestProfileMenu.classList.toggle('hidden');
+            });
+            window.addEventListener('click', () => {
+                if (!guestProfileMenu.classList.contains('hidden')) {
+                    guestProfileMenu.classList.add('hidden');
+                }
+            });
+        }
+          }
+          });
+</script>
+          {% endif %}
+

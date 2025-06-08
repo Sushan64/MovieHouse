@@ -1,6 +1,6 @@
 {% load movie_filter %}
 {% if pagination.total_pages > 1 %}
-  <div class="flex justify-center items-center mt-8 space-x-2">
+  <div class="flex justify-center items-center my-8 space-x-2">
   {% if pagination.has_previous %}
         <a href="?{% if request.GET %}{{ request.GET|preserve_query }}&{% else %}?{% endif %}page={{ pagination.previous_page }}" 
            class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"><i class="fas fa-chevron-left"></i>

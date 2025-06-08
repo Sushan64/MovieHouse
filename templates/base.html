@@ -12,6 +12,118 @@
         *{
             font-family:poppins;
         }
+        
+        .glass-effect {
+              background: rgba(17, 25, 40, 0.75);
+              backdrop-filter: blur(16px);
+              -webkit-backdrop-filter: blur(16px);
+              border: 1px solid rgba(255, 255, 255, 0.125);
+            }
+
+          .hero-bg {
+              background: linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)),
+                url('https://images.unsplash.com/photo-1489599510737-5c7c5f9b5e7c?w=1920&h=1080&fit=crop') center/cover;
+            }
+
+            .poster-card {
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+            }
+
+            .scroll-container {
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+            }
+
+            .scroll-container::-webkit-scrollbar {
+              display: none;
+            }
+
+          .category-title {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+          }
+
+            .mobile-menu {
+              background: rgba(17, 25, 40, 0.95);
+              backdrop-filter: blur(20px);
+              -webkit-backdrop-filter: blur(20px);
+            }
+
+            .category-item:hover {
+              background: rgba(59, 130, 246, 0.1);
+              transform: translateY(-1px);
+            }
+
+            .search-input {
+              background: rgba(30, 41, 59, 0.8);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+            }
+
+            .telegram-btn {
+              background: linear-gradient(135deg, #0088cc, #229ED9);
+            }
+
+            .telegram-btn:hover {
+              background: linear-gradient(135deg, #006ba3, #1a7fb8);
+              transform: translateY(-1px);
+            }
+
+           .hover-scale {
+              transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .hover-scale:hover {
+              transform: scale(1.05);
+              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            }
+
+            body {
+              background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+              min-height: 100vh;
+            }
+
+            .fade-in {
+              animation: fadeIn 0.1s ease-in-out;
+            }
+
+            @keyframes fadeIn {
+              from {
+                opacity: 0;
+                transform: translateY(-10px);
+              }
+
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+
+             @media (max-width: 640px) {
+              .poster-card {
+                min-width: 140px;
+                height: 210px;
+              }
+            }
+
+            @media (min-width: 641px) and (max-width: 1024px) {
+              .poster-card {
+                min-width: 160px;
+                height: 240px;
+              }
+            }
+
+            @media (min-width: 1025px) {
+              .poster-card {
+                min-width: 180px;
+                height: 270px;
+              }
+            }
+
     </style>
     {% block head %}
     {% endblock %}
@@ -19,6 +131,9 @@
 <body>
     {% include 'navbar.html' %}
     <div class="mt-16 text-white">
+        {% if messages %}
+    {% include 'messages.html' %}
+    {% endif %}
 {% block container %}
     {% endblock %}
     </div>

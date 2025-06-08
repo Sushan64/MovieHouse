@@ -1,136 +1,5 @@
-<style>
-    .glass-effect {
-      background: rgba(17, 25, 40, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.125);
-    }
-
-  .hero-bg {
-      background: linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)),
-        url('https://images.unsplash.com/photo-1489599510737-5c7c5f9b5e7c?w=1920&h=1080&fit=crop') center/cover;
-    }
-    
-    .poster-card {
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    
-    .scroll-container {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-    
-    .scroll-container::-webkit-scrollbar {
-      display: none;
-    }
-
-  .category-title {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-  }
-    
-    .mobile-menu {
-      background: rgba(17, 25, 40, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-    
-    .category-item:hover {
-      background: rgba(59, 130, 246, 0.1);
-      transform: translateY(-1px);
-    }
-    
-    .search-input {
-      background: rgba(30, 41, 59, 0.8);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    
-    .telegram-btn {
-      background: linear-gradient(135deg, #0088cc, #229ED9);
-    }
-    
-    .telegram-btn:hover {
-      background: linear-gradient(135deg, #006ba3, #1a7fb8);
-      transform: translateY(-1px);
-    }
-
-   .hover-scale {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .hover-scale:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-    
-    body {
-      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
-      min-height: 100vh;
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.1s ease-in-out;
-    }
-    
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-     @media (max-width: 640px) {
-      .poster-card {
-        min-width: 140px;
-        height: 210px;
-      }
-    }
-    
-    @media (min-width: 641px) and (max-width: 1024px) {
-      .poster-card {
-        min-width: 160px;
-        height: 240px;
-      }
-    }
-    
-    @media (min-width: 1025px) {
-      .poster-card {
-        min-width: 180px;
-        height: 270px;
-      }
-    }
-  
-  .video-responsive-wrapper {
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-      padding-top: 56.25%; // 16:9 Aspect Ratio
-    }
-    
-    .video-responsive-wrapper iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-    }
-  </style>
-
-
-  <!-- Navbar -->
-  <nav class="glass-effect fixed w-full top-0 z-50 transition-all duration-300">
+<!-- Navbar -->
+  <nav class="glass-effect fixed w-full top-0 z-20 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         
@@ -180,7 +49,7 @@
             </div>
             
             <!-- About Us -->
-            <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+            <a href="{% url 'post' slug='about-us' %}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
               <i class="fas fa-info-circle mr-2"></i>About Us
             </a>
           </div>
@@ -199,10 +68,14 @@
           <a href="#" class="telegram-btn text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center transition-all duration-200 shadow-lg">
             <i class="fab fa-telegram-plane mr-2"></i>Join Channel
           </a>
+          <!-- Profile Icon -->
+          {% include 'profile_icon.html' with device='desktop' %}
         </div>
         
         <!-- Mobile buttons -->
         <div class="lg:hidden flex items-center space-x-3">
+          <!-- Profile Icon mobile -->
+          {% include 'profile_icon.html' with device='mobile' %}
           <!-- Mobile Search -->
           <button id="mobileSearchBtn" class="text-gray-300 hover:text-white p-2 transition-colors duration-200">
             <i class="fas fa-search text-lg"></i>
@@ -231,7 +104,7 @@
   </nav>
   
   <!-- Mobile Menu -->
-  <div id="mobileMenu" class="lg:hidden fixed inset-0 z-40 transform translate-x-full transition-transform duration-300 ease-in-out pt-16">
+  <div id="mobileMenu" class="lg:hidden fixed inset-0 z-19 transform translate-x-full transition-transform duration-300 ease-in-out pt-16">
     <div class="mobile-menu h-full w-80 ml-auto shadow-xl">
       <div class="flex flex-col h-full">
         
@@ -268,7 +141,7 @@
             
             <!-- About Us -->
             <div class="pt-4 border-t border-gray-700/50">
-              <a href="#" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
+              <a href="{% url 'post' slug='about-us' %}" class="category-item flex items-center px-3 py-3 text-gray-300 hover:text-white rounded-lg transition-all duration-200">
                 <i class="fas fa-info-circle text-blue-400 mr-3 w-5"></i>About Us
               </a>
             </div>
@@ -286,7 +159,7 @@
   </div>
   
   <!-- Backdrop -->
-  <div id="backdrop" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 invisible transition-all duration-300"></div>
+  <div id="backdrop" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-18 opacity-0 invisible transition-all duration-300"></div>
 
 
   <script>
@@ -297,6 +170,7 @@
     const mobileMenu = document.getElementById('mobileMenu');
     const backdrop = document.getElementById('backdrop');
     
+    //toggle menu
     function toggleMobileMenu() {
       if (mobileMenu.classList.contains('translate-x-full')) {
         mobileMenu.classList.remove('translate-x-full');
@@ -339,6 +213,8 @@ searchBar.classList.add('fade-in');
       if (e.key === 'Escape' && !searchBar.classList.contains('hidden')) {
         toggleSearch();
       }
-    });
-    //---- End Navbar JavaScript ----
+
+});
+    
+//---- End Navbar JavaScript ----
   </script>

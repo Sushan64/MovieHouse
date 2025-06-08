@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 {% block container %}
 <main class="min-h-screen flex items-center justify-center py-16 px-4">
     <div class="w-full max-w-md">
@@ -11,15 +12,16 @@
                 <p class="text-gray-400">Sign in to continue to MovieHub</p>
             </div>
 
-            <form method="POST" class="space-y-6">
+            <form id="loginForm" method="POST" class="space-y-6">
               {% csrf_token %}
                 <!-- Username/Email Input -->
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username or Email</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 z-10">
-                          <i class="fa-solid fa-envelope text-gray-300 text-sm"></i>
+                          <i class="fa-solid fa-envelope text-gray-300"></i>
                         </span>
+            
                         <input type="text" id="username" name="username" required class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="john.doe@example.com">
                     </div>
                 </div>
@@ -32,7 +34,7 @@
                     </div>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 z-10">
-                            <i class="fas fa-lock text-gray-300 text-sm"></i>
+                            <i class="fas fa-lock text-gray-300"></i>
                         </span>
                         <input type="password" id="password" name="password" required class="search-input w-full pl-10 pr-10 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="••••••••">
                         <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
@@ -43,8 +45,9 @@
 
                 <!-- Login Button -->
                 <div>
-                    <button type="submit" class="w-full telegram-btn text-white px-4 py-3 rounded-lg text-base font-semibold flex items-center justify-center shadow-lg transition-transform duration-200">
-                        Login
+                    <button id="loginButton" type="submit" class="w-full telegram-btn text-white px-4 py-3 rounded-lg text-base font-semibold flex items-center justify-center shadow-lg transition-transform duration-200">
+                <i id="buttonSpinner" class="hidden mr-2"></i>
+                 <span id="buttonText">Login</span>
                     </button>
                 </div>
             </form>
@@ -52,10 +55,42 @@
             <!-- Sign Up Link -->
             <p class="text-center text-sm text-gray-400 mt-8">
                 Don't have an account?
-                <a href="#" class="font-medium text-blue-400 hover:underline">Sign up here</a>
+                <a href="{% url 'register' %}" class="font-medium text-blue-400 hover:underline">Sign up here</a>
             </p>
 
         </div>
     </div>
 </main>
+{% endblock %}
+{% block javascript %}
+<script>
+  
+const togglePassword = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('password');
+const eyeIcon = togglePassword.querySelector('i');
+        
+        togglePassword.addEventListener('click', function() {
+        
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          eyeIcon.classList.toggle('fa-eye');
+          eyeIcon.classList.toggle('fa-eye-slash');
+        });
+
+    // spinner
+    const loginForm = document.getElementById('loginForm');
+    
+    if (loginForm) {
+      const logoutButton = loginForm.querySelector('#loginButton'); 
+      const buttonSpinner = loginButton.querySelector('#buttonSpinner');
+      const buttonText = loginButton.querySelector('#buttonText');
+      loginForm.addEventListener('submit', () => {
+        loginButton.disabled = true;
+        buttonText.style.display = 'none';
+        buttonSpinner.classList.add('fas', 'fa-spinner', 'fa-spin');
+        buttonSpinner.classList.remove('hidden');
+      });
+    };
+    </script>
+    
 {% endblock %}

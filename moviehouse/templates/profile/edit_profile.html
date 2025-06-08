@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block container %}
+<main class="md:pt-24 pt-4 pb-16">
+  <div class="max-w-4xl mx-auto px-4 lg:px-8">
+
+    <!-- Profile Card -->
+    <div class="bg-slate-900/75 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+
+      <!-- Profile Header -->
+      <div class="p-6 sm:p-8 border-b border-gray-200/10">
+        <h2 class="text-3xl font-bold bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent">Account Settings</h2>
+        <p class="mt-2 text-gray-400">Manage your personal information and preferences.</p>
+      </div>
+
+      <!-- Profile Body -->
+      <div class="p-6 sm:p-8">
+        
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-10">
+
+            <!-- Left Column: Avatar and Basic Info -->
+            <div class="md:col-span-1 flex flex-col items-center text-center">
+              <div class="relative mb-4">
+                <img id="image-preview" class="w-32 h-32 rounded-full object-cover border-4 border-gray-600 shadow-lg" src="
+                  {% if form.instance.pp %} {{ form.instance.pp.url }}{% else %}/media/unknown.jpg {% endif %}" alt="Profile Picture">
+                <label for="avatar-upload" class="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 cursor-pointer transition-transform transform hover:scale-110">
+                  <i class="fas fa-camera fa-sm"></i>
+                </label>
+              </div>
+                  <input type="file" 
+         name="pp" 
+         id="avatar-upload" 
+         class="hidden"
+        accept="image/*">
+                  
+    {% if form.pp.value %}
+    <div class="mt-2 text-sm text-gray-400">
+      <input type="checkbox" name="{{ form.pp.html_name }}-clear" id="{{ form.pp.html_name }}_clear_id">
+      <label for="{{ form.pp.html_name }}_clear_id">Clear current image</label>
+    </div>
+  {% endif %}
+              
+              <h3 class="text-xl font-semibold text-white">{{ user }}</h3>
+              <p class="text-sm text-gray-400">{{ user.email }}</p>
+            </div>
+
+            <!-- Right Column: Form Fields -->
+            <div class="md:col-span-2 space-y-6">
+
+              <!-- Personal Information Section -->
+              <div>
+                <h3 class="text-lg font-medium leading-6 text-white">Personal Information</h3>
+                <p class="mt-1 text-sm text-gray-400">Update your personal details here.</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- First Name -->
+                <div>
+                  <label for="first_name" class="block text-sm font-medium text-gray-300 mb-1">First Name</label>
+                  
+                  <input type="text" name="first_name" id="first_name" value="{{ first_name }}" class="w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
+                </div>
+
+                <!-- Last Name -->
+                <div>
+                  <label for="last_name" class="block text-sm font-medium text-gray-300 mb-1">Last Name</label>
+                  <input type="text" name="last_name" id="last_name" value="{{ last_name }}" class="w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
+                </div>
+              </div>
+
+              <!-- Date of Birth -->
+              <div>
+                <label for="dob" class="block text-sm font-medium text-gray-300 mb-1">Date of Birth</label>
+                {% render_field form.dob type="date" name="dob" id="dob" value="1995-08-15" class="w-full rounded-lg px-4 py-2.5 text-white bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70 [color-scheme:dark]" %}
+                
+              </div>
+
+              <!-- Gender -->
+              <div>
+                <label for="gender" class="block text-sm font-medium text-gray-300 mb-1">Gender</label>
+                {% render_field form.gender id="gender" name="gender" class="w-full rounded-lg px-4 py-2.5 text-white bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70" %}
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex justify-end pt-4">
+                <button name='form_type' value='profile' type="submit" class="bg-gradient-to-br from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 hover:-translate-y-px text-white px-6 py-2.5 rounded-lg text-sm font-medium flex items-center transition-all duration-200 shadow-lg">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-gray-200/10"></div>
+      <!-- Password -->
+        
+      <div class="p-6 sm:p-8">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 gap-y-6">
+        <div class="relative">
+                  <label for="old_password" class="block text-sm font-medium text-gray-300 mb-1">Old Passport</label>
+                  <input type="password" name="old_password" id="old_password" class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
+          <button type="button" id="togglePassword" class="absolute top-1/2 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
+          <i class="fas fa-eye"></i>
+          </button>
+                </div>
+        <div class="relative">
+                  <label for="new_password1" class="block text-sm font-medium text-gray-300 mb-1">New Password</label>
+                  <input type="password" name="new_password1" id="new_password1" class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
+          <button type="button" id="togglePassword" class="absolute top-1/2 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
+          <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="relative">
+                  <label for="new_password2" class="block text-sm font-medium text-gray-300 mb-1">Confirm Password</label>
+                  <input type="password" name="new_password2" id="new_password2" class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
+          <button type="button" id="togglePassword" class="absolute top-1/2 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
+          <i class="fas fa-eye"></i>
+          </button>
+        </div>
+            <div class="flex justify-end pt-4">
+          <button name='form_type' value='password' type="submit" class="bg-gradient-to-br from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 hover:-translate-y-px text-white px-6 py-2.5 rounded-lg text-sm font-medium flex items-center transition-all duration-200 shadow-lg">
+                   Change Password
+          </button>
+            </div>
+          </div>
+        </form>
+      </div>
+        
+<!-- Divider -->
+      <div class="border-t border-gray-200/10"></div>
+    
+      <!-- Danger Zone -->
+      <div class="p-6 sm:p-8">
+          <h3 class="text-lg font-medium leading-6 text-red-400">Danger Zone</h3>
+          <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <!--<p class="text-sm text-gray-400 max-w-xl">
+                  Deleting your account is a permanent action. All your data, including watchlists and reviews, will be lost forever.
+              </p>-->
+            <form id="logoutForm" method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+             <button id="logoutButton" type="submit" class="mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-red-500/50 text-sm font-medium rounded-md text-red-400 bg-red-500/10 hover:bg-red-500/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-gray-900 transition-colors">
+               <i id="buttonSpinner" class="hidden mr-2"></i>
+                 <span id="buttonText">Logout</span>
+              </button>
+            </form>
+          </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const avatarUploadInput = document.getElementById('avatar-upload');
+    const imagePreview = document.getElementById('image-preview');
+    if (avatarUploadInput && imagePreview) {
+      avatarUploadInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            // e.target.result contains a data: URL representing the file's data.
+            imagePreview.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    //spinner
+    const logoutForm = document.getElementById('logoutForm');
+    
+    if (logoutForm) {
+      const logoutButton = logoutForm.querySelector('#logoutButton'); 
+      const buttonSpinner = logoutButton.querySelector('#buttonSpinner');
+      const buttonText = logoutButton.querySelector('#buttonText');
+      logoutForm.addEventListener('submit', () => {
+        logoutButton.disabled = true;
+        buttonText.style.display = 'none';
+        buttonSpinner.classList.add('fas', 'fa-spinner', 'fa-spin');
+        buttonSpinner.classList.remove('hidden');
+        
+
+      
+  });
+    };
+
+// toggle password
+    const togglePassword = document.querySelectorAll('togglePassword');
+    
+togglePassword.forEach((button) =>{
+  const container = button.closest('.relative');
+  const passwordInput = container.querySelector('.password');
+  const eyeIcon = button.querySelector('i');
+  
+    button.addEventListener('click', function() {
+      
+      // Finds the closest parent container, then the input inside it    
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+          passwordInput.type = type;
+          eyeIcon.classList.toggle('fa-eye');
+          eyeIcon.classList.toggle('fa-eye-slash');
+        });
+});
+  }); //content loaded closed
+</script>
+{% endblock %}
