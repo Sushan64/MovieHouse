@@ -256,14 +256,17 @@ def edit_profile(request):
         return redirect('profile')
       else:
         messages.error(request, "Something wrong! Couldn't update your profile" )
+    password_form = PasswordChangeForm(user)
     elif request.POST.get('form_type') == 'password':
       if password_form.is_valid():
           password_form.save()
           update_session_auth_hash(request, password_form.user)
           messages.success(request, 'Password update successful')
           return redirect('profile')
+        form = UserProfileForm(instance = profile)
       else:
           messages.error(request, "Something wrong! Couldn't update your password")
+    form = UserProfileForm(instance=profile)
       
   else:
     form = UserProfileForm(instance=profile)
