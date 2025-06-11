@@ -20,13 +20,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import handler404
 from moviehouse.views import custom_404_view
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('moviehouse.urls')),
     path('froala_editor/', include('froala_editor.urls')),
     #path('accounts/', include('django.contrib.auth.urls'),),
-    
     
 ]
 

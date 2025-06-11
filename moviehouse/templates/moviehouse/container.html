@@ -45,7 +45,7 @@
 
 <!-- Categories Section -->
 <main class="bg-gradient-to-b from-black to-gray-900 min-h-screen">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
 
     <!-- Popular/Bollywood/Hollywood -->
     {% for industry in industries %}
@@ -60,15 +60,16 @@
       </div>
       <div class="scroll-container flex gap-4 overflow-x-auto pb-4">
         {% for movie in movies|slice:":10" %}
-        <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
-          <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
-            <h3 class="cursor-pointer text-white font-semibold w-8 text-sm mb-1"><a href="{% url 'movie-detail' movie.id movie.title|slugify %}">{{ movie.title }}</a></h3>
+       <a class="z-2" href="{% url 'movie-detail' movie.id movie.title|slugify %}"> <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
+        <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
+            <h3 class="cursor-pointer text-white font-semibold w-full text-sm mb-1 line-clamp-4">{{ movie.title }}</h3>
             <div class="flex items-center gap-2">
               <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average|format_decimal }}</span>
               <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
             </div>
           </div>
       </div>
+       </a>
         {% endfor %}
       </div>
     </section>
@@ -87,18 +88,20 @@
         </button></a>
       </div>
       <div class="scroll-container flex gap-4 overflow-x-auto pb-4">
-
+<!-- For more [genre id]: https://www.themoviedb.org/talk/5daf6eb0ae36680011d7e6ee -->
         {% for movie in movies|slice:":10" %}
-    <!-- For more [genre id]: https://www.themoviedb.org/talk/5daf6eb0ae36680011d7e6ee -->
-        <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
+       <a class="z-2" href="{% url 'movie-detail' movie.id movie.title|slugify %}"> <div class="poster-card hover-scale rounded-lg cursor-pointer glass-effect flex-shrink-0" style="background-image: url('https://image.tmdb.org/t/p/w200{{ movie.poster_path }}')">
           <div class="h-full w-full bg-gradient-to-t from-black/80 to-transparent rounded-lg flex flex-col justify-end p-4">
-            <h3 class="text-white font-semibold w-8 text-sm mb-1 cursor-pointer"><a href="{% url 'movie-detail' movie.id movie.title|slugify%}">{{ movie.title }}</a></h3>
+            <h3 class="text-white font-semibold w-full text-sm mb-1 cursor-pointer line-clamp-4">{{ movie.title }}</h3>
+            
             <div class="flex items-center gap-2">
               <span class="text-yellow-400 text-xs"><i class="fas fa-star"></i> {{ movie.vote_average|format_decimal }}</span>
               <span class="text-gray-300 text-xs">{{ movie.release_date|slice:":4" }}</span>
             </div>
           </div>
-      </div>
+       </div>
+      </a>
+        
         {% endfor %}
       </div>
     </section>

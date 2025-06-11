@@ -93,11 +93,13 @@
     <div id="searchBar" class="hidden border-t border-gray-700/50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <form method="get" action="{% url 'search' %}" class="relative">
-          <input type="text" placeholder="Search movies, shows, actors..." class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" name="search" id="search">
+          <input type="text" placeholder="Search movies..." class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" name="search" id="search" value="">
           <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-          <button id="closeSearch" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-200">
+          
+          <button type="submit" id="closeSearch" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-200">
             <i class="fas fa-times"></i>
           </button>
+        
         </form>
       </div>
     </div>
@@ -191,7 +193,22 @@
     const mobileSearchBtn = document.getElementById('mobileSearchBtn');
     const searchBar = document.getElementById('searchBar');
     const closeSearch = document.getElementById('closeSearch');
-    
+    const searchInput = document.getElementById('search');
+    const arrowIcon = closeSearch.querySelector('i');
+    const searchForm = document.querySelector('form');
+
+    // Change close button's icon when typing
+    searchInput.addEventListener('input', () => {
+    if (searchInput.value.trim() !== '') {
+      arrowIcon.classList.remove('fa-times');
+      arrowIcon.classList.add('fa-arrow-right')
+    } else {
+      arrowIcon.classList.remove('fa-arrow-right');
+      arrowIcon.classList.add('fa-times')
+    }
+  });
+
+    // Toggle the entire search bar div
     function toggleSearch() {
       if (searchBar.classList.contains('hidden')) {
         searchBar.classList.remove('hidden');
@@ -204,11 +221,19 @@ searchBar.classList.add('fade-in');
         searchBar.classList.remove('fade-in');
       }
     }
-    
+// Toggle search button on desktop or mobile
     searchBtn.addEventListener('click', toggleSearch);
     mobileSearchBtn.addEventListener('click', toggleSearch);
-    closeSearch.addEventListener('click', toggleSearch);
+
+// Toogle if input is empty otherwise submit the form
+searchForm.addEventListener('submit', (e) => {
+  if  (searchInput.value.trim() === ''){
+    e.preventDefault(); // stop form submission
+    toggleSearch();
+  }
+  });
     
+// Toogle search bar when Esc key pressed (desktop) 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !searchBar.classList.contains('hidden')) {
         toggleSearch();

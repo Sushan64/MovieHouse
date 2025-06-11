@@ -13,5 +13,13 @@ urlpatterns =[
   path('profile/', views.edit_profile, name="profile"),
   path('login/', views.custom_login, name="login"),
   path('logout/', views.custom_logout, name='logout'),
+
+  #Password Reset Form Configuration
+      path('password_reset/', views.PasswordResetView.as_view(template_name="registration/reset_password.html"), name='password_reset'),
   
+  path('password-reset/done/', views.PasswordResetDoneView.as_view(template_name="registration/reset_password_done.html"), name='password_reset_done'),
+  
+  path('reset/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(template_name="registration/reset_password_confirm.html"), name='password_reset_confirm'),
+  
+  path('reset/done/', views.PasswordResetCompleteView.as_view(template_name="registration/reset_password_complete.html"), name='password_reset_complete'),
 ]

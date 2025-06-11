@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% block container %}
-<main class="min-h-screen flex items-center justify-center py-16 px-4">
-    <div class="w-full max-w-md">
+<main class="min-h-[calc(100vh-4.5rem)]  flex items-center justify-center px-4">
+    <div class="w-full max-w-xl">
 
         <div class="glass-effect rounded-2xl shadow-2xl p-6 sm:p-10">
             <div class="text-center mb-8">
@@ -16,31 +16,47 @@
               {% csrf_token %}
                 <!-- Username/Email Input -->
                 <div>
-                    <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username or Email</label>
+                    <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 z-10">
-                          <i class="fa-solid fa-envelope text-gray-300"></i>
+                          <i class="fa-solid fa-circle-user text-md text-gray-300"></i>
                         </span>
             
-                        <input type="text" id="username" name="username" required class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="john.doe@example.com">
+                        <input type="text" id="username" name="username" required class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="sushan64">
                     </div>
+                    {% if form.username.errors %}
+            <ul class="mt-1 ml-1">
+              {% for error in form.username.errors %}
+              <li class="text-sm text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</li>
+              {% endfor %}
+            </ul>
+        {% endif %}
                 </div>
 
                 <!-- Password Input -->
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
-                        <a href="#" class="text-sm text-blue-400 hover:underline">Forgot Password?</a>
+                        <a href="{% url 'password_reset' %}" class="text-sm text-blue-400 hover:underline">Forgot Password?</a>
                     </div>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 z-10">
                             <i class="fas fa-lock text-gray-300"></i>
                         </span>
-                        <input type="password" id="password" name="password" required class="search-input w-full pl-10 pr-10 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="••••••••">
+                        
+{% render_field form.password id="password" name="password" class="search-input w-full pl-10 pr-10 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="••••••••" %}
+                        <!--<input type="password" id="password" name="password" required class="search-input w-full pl-10 pr-10 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="••••••••">-->
                         <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
+                    {% if form.password.errors %}
+            <ul class="mt-1 ml-1">
+              {% for error in form.password.errors %}
+              <li class="text-sm text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</li>
+              {% endfor %}
+            </ul>
+        {% endif %}
                 </div>
 
                 <!-- Login Button -->

@@ -87,10 +87,13 @@ def preserve_query(params, exclude_key ="page"):
     query_dict.pop(exclude_key, None)
     return query_dict.urlencode()
 
-@register.filter(name="add_attrs")
-def add_attrs(field, attrs):
-    attr_dict = {}
-    for attr in attrs.split('&'):
-        key, value = attr.split('=')
-        attr_dict[key.strip()] = value.strip()
-    return field.as_widget(attrs=attr_dict)
+@register.simple_tag(takes_context=True)
+def page_url(context, page_number):
+    
+    # Get a mutable copy of the current GET parameters from the request
+    query_params = context['request'].GET.copy()
+    if int(page_number) == 1:
+        query_params.pop('page', None)
+    else:
+        query_params['page'] = page_number
+    return query_params.urlencode()

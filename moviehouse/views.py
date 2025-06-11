@@ -6,26 +6,29 @@ from .forms import PostForm, UserRegistrationForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
+from django.contrib.auth import views as auth_views
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
+from django.urls import reverse_lazy
+from .utils.tmdb import get_tmdb
 
 #API
 import requests
-url_genre ="https://api.themoviedb.org/3/genre/movie/list"
+url_genre ="https://api.themoviedb.org/3/genre/movie/list" #type of genres list
 headers_main = {
     "accept": "application/json",
     "Authorization": f"Bearer {settings.TMDB_API_KEY}"
 }
 url = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&sort_by=popularity.desc"
-response = requests.get(url, headers=headers_main)
-data = response.json()
-results = data.get('results', [])
-  
-genre_response = requests.get(url_genre, headers=headers_main) 
-data_genre = genre_response.json()
 
-results_genres = data_genre["genres"] 
+data = get_tmdb(url, cache_key='results')
+results = data.get('results', [])
+
+data_genre = get_tmdb(url_genre, cache_key="genres_lookup", timeout=604800)
+
+results_genres = data_genre["genres"]
+
 genres_lookup = {genre['id']: genre['name'] for genre in results_genres} 
 # ^ initialized genres_lookup as new dict with id as key and name as value
 
@@ -41,22 +44,16 @@ def title_to_slug(title):
 #Catch movie from ID
 def get_movie_by_id(movie_id):
     url = f'https://api.themoviedb.org/3/movie/{movie_id}'
-    headers = headers_main
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    return None
+    data = get_tmdb(url, cache_key=f"get_movie_by_id_{movie_id}")
+    return data
 
 #------------------------
 
 #get_cast
 def get_cast(movie_id):
   url = f"https://api.themoviedb.org/3/movie/{movie_id}/credits"
-  headers = headers_main
-  response = requests.get(url, headers=headers)
-  if response.status_code == 200:
-      return response.json()
-  return {}
+  data = get_tmdb(url, cache_key=f'get_cast_{movie_id}')
+  return data
 
 #------------------------
 
@@ -71,11 +68,9 @@ def pagination(url, page=1, with_genre = None):
     'page': page,
     'with_genre': with_genre
   }
-
   data = requests.get(url, headers = headers_main, params = params).json()
   total_pages = data.get('total_pages', 1)
   results = data.get('results', [])
-  
 
   pagination_info = {
         'current_page': page,
@@ -104,14 +99,13 @@ industries = {
 }
 
 def home(request):
-  headers = headers_main
   genre_movies = {}
   for genre_id, genre_name in genres_to_show.items():
     url = f"https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_genres={genre_id}"
     params = {
       'pages': 1
     }
-    response = requests.get(url, headers=headers, params=params).json()
+    response = get_tmdb(url, cache_key=f"genres_movies_{genre_id}", params=params)
     genre_movies[genre_name] = response.get('results', [])
     
   industries_type =['popular', 'bollywood', 'hollywood'] #align it accordingly
@@ -119,7 +113,7 @@ def home(request):
   for industry in industries_type:
     lang = industries.get(industry, 'en')
     industry_url = f"https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&with_original_language={lang}"
-    movies = requests.get(industry_url, headers=headers_main).json().get('results',[])
+    movies = get_tmdb(industry_url, cache_key=f"industries_data_{lang}").get('results', [])
     industries_data[industry] = movies
     
   context = {
@@ -244,7 +238,8 @@ def edit_profile(request):
     profile, created = UserProfile.objects.get_or_create(user=user)
     
     if request.method == "POST":
-        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+      #Initiallizing Form and Password
+        form = UserProfileForm(request.POST, request.FILES, instance=profile) #get data of specific user (instance=profile)
         password_form = PasswordChangeForm(user, request.POST)
         
         if request.POST.get('form_type') == 'profile':
@@ -257,15 +252,17 @@ def edit_profile(request):
                 return redirect('profile')
             else:
                 messages.error(request, "Something went wrong! Couldn't update your profile")
+                password_form = PasswordChangeForm(user)
                 
         elif request.POST.get('form_type') == 'password':
             if password_form.is_valid():
                 password_form.save()
-                update_session_auth_hash(request, password_form.user)
+                update_session_auth_hash(request, password_form.user) #Prevent user from logout
                 messages.success(request, 'Password update successful')
                 return redirect('profile')
             else:
                 messages.error(request, "Something went wrong! Couldn't update your password")
+                form = UserProfileForm(instance=profile)
                 
     else:
         form = UserProfileForm(instance=profile)
@@ -283,17 +280,19 @@ def edit_profile(request):
 def custom_login(request):
   if request.user.is_authenticated:
     return redirect('profile')
+
+  form = AuthenticationForm(request, data=request.POST or None)
+
   if request.method == "POST":
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-      login(request, user)
-      messages.success(request, f'Welcome back! {user}')
-      return redirect(request.GET.get('next', '/'))
-    else:
-      messages.error(request, 'Invalid username or password')
-  return render(request, 'registration/login.html')
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            messages.success(request, f'Welcome back! {user}')
+            return redirect(request.GET.get('next', '/'))
+        else:
+            messages.error(request, 'Invalid username or password')
+          
+  return render(request, 'registration/login.html', {'form': form})
 
 #----------------------
 def custom_logout(request):
@@ -306,3 +305,38 @@ def custom_logout(request):
 #---------------------
 def custom_404_view(request, exception):
   return render(request, "moviehouse/404.html", status=404)
+
+#---------------------
+#Forget Password Security Setup
+#Default django PasswordResetView
+class PasswordResetView(auth_views.PasswordResetView):
+    # Default function of the class
+    def form_valid(self, form):
+        self.request.session['pwd_reset_step'] = 'email_sent' #Adding a New key on request.session dict with value 'email_sent'
+        return super().form_valid(form) #Returning default django form but with a temp key in request.session
+
+class PasswordResetDoneView(auth_views.PasswordResetDoneView):
+  # Default function of the class
+  def dispatch(self, request, *args, **kwargs):
+    # Check newly added key of request.session is available
+    if request.session.get('pwd_reset_step') != 'email_sent':
+      messages.info(request, 'Please enter your email to reset password.')
+      return redirect('password_reset')
+    # If exist then
+    return super().dispatch(request, *args, **kwargs)
+
+class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+  def form_valid(self, form):
+    # Change the value of key
+    self.request.session['pwd_reset_step'] = 'completed'
+    return super().form_valid(form)
+
+class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+  def dispatch(self, request, *args, **kwargs):
+    # Check temp key exist
+    if request.session.get('pwd_reset_step') != 'completed':
+      messages.info(request, 'Please complete the password reset process.')
+      return redirect('password_reset')
+    # If exist then
+    request.session.pop('pwd_reset_step', None)  # Clear after use
+    return super().dispatch(request, *args, **kwargs)

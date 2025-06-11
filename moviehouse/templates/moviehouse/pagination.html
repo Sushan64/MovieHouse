@@ -2,7 +2,7 @@
 {% if pagination.total_pages > 1 %}
   <div class="flex justify-center items-center my-8 space-x-2">
   {% if pagination.has_previous %}
-        <a href="?{% if request.GET %}{{ request.GET|preserve_query }}&{% else %}?{% endif %}page={{ pagination.previous_page }}" 
+        <a href="{% if request.GET %}?{{ request.GET|preserve_query }}{% if pagination.previous_page != 1 %}&page={{ pagination.previous_page }}{% endif %}{% endif %}" 
            class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"><i class="fas fa-chevron-left"></i>
         </a>
     {% else %}
@@ -16,7 +16,7 @@
                 {{ page_num }}
             </span>
         {% else %}
-            <a href="?{% if request.GET %}{{ request.GET|preserve_query }}&{% else %}?{% endif %}page={{ page_num }}" 
+            <a href="{% if request.GET %}?{{ request.GET|preserve_query }}{% if page_num != 1 %}&page={{ page_num }}{% endif %}{% endif %}" 
                class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
                 {{ page_num }}
             </a>
@@ -25,7 +25,7 @@
     
     <!-- Next Button -->
     {% if pagination.has_next %}
-        <a href="{% if request.GET %}?{{ request.GET|preserve_query }}&{% else %}?{% endif %}page={{ pagination.next_page }}" 
+        <a href="{% if request.GET %}?{{ request.GET|preserve_query }}&page={{ pagination.next_page }}{% endif %}" 
            class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"><i class="fas fa-chevron-right"></i>
         </a>
     {% else %}

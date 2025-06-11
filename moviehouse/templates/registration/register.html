@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% block container %}
-<main class="min-h-screen flex items-center justify-center py-8 px-4">
-  <div class="w-full max-w-md">
+<main class="min-h-[calc(100vh-4.5rem)] flex items-center justify-center py-16 px-4">
+  <div class="w-full max-w-xl">
     <div class="glass-effect rounded-2xl shadow-2xl p-6 sm:p-10">
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent mb-2">Create Your Account</h2>
@@ -17,8 +17,16 @@
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5"><i class="fas fa-user text-gray-400 z-10"></i>
             </span>
-            <input type="text" id="username" name="username" required class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="your_username">
+            {% render_field form.username class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="your_username" id="username" %}
+            
           </div>
+       {% if form.username.errors %}
+            <ul class="mt-1 ml-1">
+              {% for error in form.username.errors %}
+              <li class="text-sm text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</li>
+              {% endfor %}
+            </ul>
+        {% endif %}
         </div>
 
         <!-- Email Input -->
@@ -28,8 +36,15 @@
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5">
               <i class="fas fa-envelope text-gray-400 z-10"></i>
             </span>
-            <input type="email" id="email" name="email" required class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="you@example.com">
+            {% render_field form.email class="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="you@example.com" id="email" %}
           </div>
+          {% if form.email.errors %}
+            <ul class="mt-1 ml-1">
+              {% for error in form.email.errors %}
+              <li class="text-sm text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</li>
+              {% endfor %}
+            </ul>
+        {% endif %}
         </div>
 
         <!-- Password Input -->
@@ -39,11 +54,18 @@
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5">
               <i class="fas fa-lock text-gray-400 z-10"></i>
             </span>
-            <input type="password" id="password" name="password1" required class="search-input w-full pl-10 pr-10 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="••••••••">
+            {% render_field form.password1 class="search-input w-full pl-10 pr-10 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="••••••••" id="password" %}
             <button type="button" class="toggle-password-btn absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-white transition-colors duration-300">
               <i class="fas fa-eye"></i>
             </button>
           </div>
+          {% if form.password1.errors %}
+            <ul class="mt-1 ml-1">
+              {% for error in form.password1.errors %}
+              <li class="text-sm text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</li>
+              {% endfor %}
+            </ul>
+        {% endif %}
         </div>
 
         <!-- Confirm Password Input -->
@@ -53,12 +75,18 @@
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5">
               <i class="fas fa-lock text-gray-400 z-10"></i>
             </span>
-            <input type="password" id="password-confirm" name="password2" required class="search-input w-full pl-10 pr-10 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="••••••••">
+            {% render_field form.password2 class="search-input w-full pl-10 pr-10 py-3 rounded-lg border border-gray-600/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="••••••••" id="password-confirm" %}
             <button type="button" class="toggle-password-btn absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-white transition-colors duration-300">
               <i class="fas fa-eye"></i>
             </button>
           </div>
-           <p id="passwordError" class="text-red-400 text-xs mt-2 hidden">Passwords do not match.</p>
+           {% if form.password2.errors %}
+            <ul class="mt-1 ml-1">
+              {% for error in form.password2.errors %}
+              <li class="text-sm text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</li>
+              {% endfor %}
+            </ul>
+        {% endif %}
         </div>
 
         <!-- Submit Button -->
@@ -93,28 +121,6 @@
           eyeIcon.classList.toggle('fa-eye');
           eyeIcon.classList.toggle('fa-eye-slash');
       });
-  });
-
-  // --- Password Confirmation Check ---
-  const form = document.getElementById('registrationForm');
-  const password = document.getElementById('password');
-  const passwordConfirm = document.getElementById('password-confirm');
-  const passwordError = document.getElementById('passwordError');
-
-  form.addEventListener('submit', function(e) {
-      // Reset styles first
-      password.classList.remove('border-red-500');
-      passwordConfirm.classList.remove('border-red-500');
-      passwordError.classList.add('hidden');
-
-      if (password.value !== passwordConfirm.value) {
-          e.preventDefault(); // Stop form submission
-
-          // Show error message and highlight fields
-          passwordError.classList.remove('hidden');
-          password.classList.add('border-red-500', 'focus:ring-red-500');
-          passwordConfirm.classList.add('border-red-500', 'focus:ring-red-500');
-      }
   });
 </script>
 
