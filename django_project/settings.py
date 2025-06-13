@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import psycopg2
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -108,13 +109,19 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'koyebdb',
-        'USER': 'koyeb-adm',
+        'NAME': 'postgres',
+        'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': 'ep-bitter-hill-a24gw5gm.eu-central-1.pg.koyeb.app',
-        'OPTIONS': {'sslmode': 'require'},
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
+  }
+
+
+DATABASES['default']['OPTIONS'] = {
+    'sslmode': 'require',
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
