@@ -1,7 +1,41 @@
 {% extends 'base.html' %}
 {% block container %}
-<div class="h-screen w-screen">
-  <h1 class="text-center">404!</h1>
-  <h2 class="text-center">Not found</h2>
+  <main class="min-h-[calc(100vh-4.5rem)]  flex flex-col items-center justify-center px-4">
+        <!-- Icon -->
+      <div class="w-full max-w-xl">
+
+        <div class="glass-effect rounded-2xl shadow-2xl p-6 text-center sm:p-10">
+        <div class="mb-6 flex justify-center">
+            <!-- Heroicons: film -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-24 h-24 text-gray-600">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+        </svg>
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="text-8xl md:text-9xl font-extrabold tracking-tighter bg-gradient-to-r from-blue-400 to-purple-600 text-transparent bg-clip-text">
+            404
+        </h1>
+
+        <!-- Subheading -->
+        <h2 class="mt-4 text-3xl md:text-5xl font-bold text-gray-200">
+            Scene Missing
+        </h2>
+
+        <!-- Descriptive Text -->
+        <p class="text-center mt-6 text-lg max-w-lg text-gray-400">
+            Looks like this page was left on the cutting room floor. It might have been moved, deleted, or maybe it never existed in the first place.
+        </p>
+
+        <!-- Call to Action Button -->
+        <div class="mt-10">
+            <a href="/" class="inline-block cursor-pointer px-8 py-3 telegram-btn text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-300">
+                Go to Homepage
+            </a>
+        </div>
 </div>
+      </div>
+    </main>
+
+
 {% endblock %}

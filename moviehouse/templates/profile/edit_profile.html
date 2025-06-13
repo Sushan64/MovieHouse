@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+{% load static %}
+{% load cloudinary %}
 {% block container %}
 <main class="md:pt-24 pt-4 pb-16">
   <div class="max-w-4xl mx-auto px-4 lg:px-8">
@@ -24,7 +26,7 @@
             <div class="md:col-span-1 flex flex-col items-center text-center">
               <div class="relative mb-4">
                 <img id="image-preview" class="w-32 h-32 rounded-full object-cover border-4 border-gray-600 shadow-lg" src="
-                  {% if form.instance.pp %} {{ form.instance.pp.url }}{% else %}/media/unknown.jpg {% endif %}" alt="Profile Picture">
+                  {% if profile.pp %} {{ profile.pp.url }}{% else %}{% static 'images/unknown.jpg' %} {% endif %}" alt="Profile Picture">
                 <label for="avatar-upload" class="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 cursor-pointer transition-transform transform hover:scale-110">
                   <i class="fas fa-camera fa-sm"></i>
                 </label>
@@ -33,10 +35,20 @@
          name="pp" 
          id="avatar-upload" 
          class="hidden"
-        accept="image/*">
-                  
+        accept="image/jpg, image/png, image/jpeg"
+        onchange="checkSize(this)">
+              {% if form.pp.errors %}
+              <ul>
+                {% for error in form.pp.errors %}
+                <li class="text-sm text-red-600"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+              
     {% if form.pp.value %}
+              
     <div class="mt-2 text-sm text-gray-400">
+    
       <input type="checkbox" name="{{ form.pp.html_name }}-clear" id="{{ form.pp.html_name }}_clear_id">
       <label for="{{ form.pp.html_name }}_clear_id">Clear current image</label>
     </div>
@@ -44,6 +56,7 @@
               
               <h3 class="text-xl font-semibold text-white">{{ user }}</h3>
               <p class="text-sm text-gray-400">{{ user.email }}</p>
+              
             </div>
 
             <!-- Right Column: Form Fields -->
@@ -108,12 +121,14 @@
               <h3 class="text-lg font-medium leading-6 text-white">Change Password</h3>
                 <p class="mt-1 text-sm text-gray-400">Update your password here.</p>
             </div>
-        <div class="relative">
+            <div>
                   <label for="old_password" class="block text-sm font-medium text-gray-300 mb-1">Old Password</label>
-                  <input type="password" name="old_password" id="old_password" class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
-          <button type="button" class="togglePassword absolute top-1/2 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
+              <div class="relative">
+                  <input type="password" name="old_password" id="old_password" required class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
+          <button type="button" class="togglePassword absolute inset-y-0 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
           <i class="fas fa-eye"></i>
           </button>
+        </div>
           {% if password_form.old_password.errors %}
             <ul class="mt-1 ml-1">
               {% for error in password_form.old_password.errors %}
@@ -122,12 +137,15 @@
             </ul>
         {% endif %}
                 </div>
-        <div class="relative">
+            
+            <div>
                   <label for="new_password1" class="block text-sm font-medium text-gray-300 mb-1">New Password</label>
-                  <input type="password" name="new_password1" id="new_password1" class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
-          <button type="button" class="togglePassword absolute top-1/2 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
+              <div class="relative">
+                  <input type="password" required name="new_password1" id="new_password1" class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
+          <button type="button" class="togglePassword absolute inset-y-0 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
           <i class="fas fa-eye"></i>
           </button>
+              </div>
         {% if password_form.new_password1.errors %}
             <ul class="mt-1 ml-1">
               {% for error in password_form.new_password1.errors %}
@@ -137,12 +155,15 @@
         {% endif %}
           
         </div>
-        <div class="relative">
+
+            <div>
                   <label for="new_password2" class="block text-sm font-medium text-gray-300 mb-1">Confirm Password</label>
-                  <input type="password" name="new_password2" id="new_password2" class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
-          <button type="button" class="togglePassword absolute top-1/2 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
+              <div class="relative">
+                  <input type="password" required name="new_password2" id="new_password2" class="password w-full rounded-lg px-4 py-2.5 text-white placeholder-gray-400 bg-slate-800/80 border border-white/10 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/70">
+          <button type="button" class="togglePassword absolute inset-y-0 right-0 flex items-center px-3 text-gray-300 hover:text-white transition-colors duration-300 z-10">
           <i class="fas fa-eye"></i>
           </button>
+              </div>
           {% if password_form.new_password2.errors %}
             <ul class="mt-1 ml-1">
               {% for error in password_form.new_password2.errors %}
@@ -238,7 +259,16 @@ togglePassword.forEach((button) =>{
           eyeIcon.classList.toggle('fa-eye');
           eyeIcon.classList.toggle('fa-eye-slash');
         });
-});
+}); 
   }); //content loaded closed
+
+   //Limit file Upload
+    function checkSize(input) {
+  if (input.files[0] && input.files[0].size > 1024 * 1024 * 2) {
+    alert("Max file size is 2MB!");
+    input.value = "";
+  }
+    }
+   
 </script>
 {% endblock %}

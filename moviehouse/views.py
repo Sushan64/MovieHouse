@@ -4,13 +4,17 @@ from django.conf import settings
 from .models import Post, UserProfile
 from .forms import PostForm, UserRegistrationForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import redirect
-from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth import views as auth_views
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_protect
+#from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
-from django.urls import reverse_lazy
+#from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from .utils.tmdb import get_tmdb
 
 #API
@@ -149,10 +153,14 @@ def search(request):
   movies = []
   query = request.GET.get('search')
   if query:
-    url = f'https://api.themoviedb.org/3/search/movie?query={query}'
-    page = request.GET.get('page', 1)
-    pagination_data = pagination(url, page)
-    movies = pagination_data.get('results', [])
+    if len(query) > 50:
+      pagination_data = {}
+      movies= []
+    else: 
+      url = f'https://api.themoviedb.org/3/search/movie?query={query}'
+      page = request.GET.get('page', 1)
+      pagination_data = pagination(url, page)
+      movies = pagination_data.get('results', [])
 
     context={'query':query,
            'movies': movies,
@@ -201,11 +209,12 @@ def post(request, slug):
 #--------------------------
 
 @login_required
+@staff_member_required
 def create_post(request):
   if request.method == "POST":
     form = PostForm(request.POST, request.FILES)
     if form.is_valid():
-      post = form.save(commit=False)
+      post = form.save()
       post.save()
       messages.success(request, 'Post Successful!')
       return redirect('post', slug=post.slug )
@@ -225,24 +234,26 @@ def register(request):
       user.set_password(form.cleaned_data["password1"])
       user.save()
       login(request, user)
-      messages.success(request, f"Your account has been created! You are now loged in")
+      messages.success(request, f"Your account has been created! You are now logged in")
       return redirect('profile')
   else:
     form = UserRegistrationForm()
   return render(request, "registration/register.html", {'form': form })
 
 #--------------------
+
 @login_required
 def edit_profile(request):
     user = request.user
     profile, created = UserProfile.objects.get_or_create(user=user)
+
+    #Initiallizing Form and Password
+    form = UserProfileForm(instance=profile)
+    password_form = PasswordChangeForm(user)
     
     if request.method == "POST":
-      #Initiallizing Form and Password
-        form = UserProfileForm(request.POST, request.FILES, instance=profile) #get data of specific user (instance=profile)
-        password_form = PasswordChangeForm(user, request.POST)
-        
         if request.POST.get('form_type') == 'profile':
+            form = UserProfileForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
                 form.save()
                 user.first_name = request.POST.get('first_name', '')
@@ -251,10 +262,12 @@ def edit_profile(request):
                 messages.success(request, 'Your account has been successfully updated')
                 return redirect('profile')
             else:
-                messages.error(request, "Something went wrong! Couldn't update your profile")
-                password_form = PasswordChangeForm(user)
-                
+              messages.error(request, "Something went wrong! Couldn't update your profile")
+              
+              password_form = PasswordChangeForm(user)
+            
         elif request.POST.get('form_type') == 'password':
+            password_form = PasswordChangeForm(user, request.POST)
             if password_form.is_valid():
                 password_form.save()
                 update_session_auth_hash(request, password_form.user) #Prevent user from logout
@@ -263,12 +276,9 @@ def edit_profile(request):
             else:
                 messages.error(request, "Something went wrong! Couldn't update your password")
                 form = UserProfileForm(instance=profile)
-                
-    else:
-        form = UserProfileForm(instance=profile)
-        password_form = PasswordChangeForm(user)
 
     context = {
+      'profile': profile,
         'form': form,
         'first_name': user.first_name,
         'last_name': user.last_name,
@@ -340,3 +350,22 @@ class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     # If exist then
     request.session.pop('pwd_reset_step', None)  # Clear after use
     return super().dispatch(request, *args, **kwargs)
+
+
+
+#-------------
+from cloudinary_storage.storage import MediaCloudinaryStorage
+
+@csrf_exempt
+@require_POST
+def custom_ckeditor_upload(request):
+    uploaded_file = request.FILES.get('upload')
+    if not uploaded_file:
+        return JsonResponse({"error": {"message": "No file was sent."}}, status=400)
+    try:
+        cloudinary_storage = MediaCloudinaryStorage()
+        file_name = cloudinary_storage.save(uploaded_file.name, uploaded_file)
+        file_url = cloudinary_storage.url(file_name)
+        return JsonResponse({'url': file_url})
+    except Exception as e:
+        return JsonResponse({"error": {"message": f"Upload failed: {e}"}}, status=500)

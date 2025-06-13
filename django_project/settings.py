@@ -27,10 +27,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [".replit.dev", ".replit.app"]
-CSRF_TRUSTED_ORIGINS = ["https://*.replit.dev", "https://*.replit.app"]
+ALLOWED_HOSTS = ['*','.koyeb.app', ".replit.dev", ".replit.app"]
+CSRF_TRUSTED_ORIGINS = ["https://*.replit.dev", "https://*.replit.app",
+"https://*..koyeb.app",]
 
 # Application definition
 
@@ -41,16 +42,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'moviehouse',
-    'tailwind',
-    'froala_editor',
-    'widget_tweaks'
+    'cloudinary_storage', #Cloudinary
+    'moviehouse', #Added Manually 
+    'django_ckeditor_5', #Added Manually 
+    'widget_tweaks', #Added Manually
+    'cloudinary', #cloudinary
+    
 ]
 
-
+CLOUDINARY_URL= os.environ.get('CLOUDINARY_URL')
+'''
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+'''
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #whitenose middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,37 +139,69 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+    BASE_DIR / "static",
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-FROALA_EDITOR_OPTIONS = {
-    'toolbarButtons': ['paragraphFormat', 'fontSize', 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'color', 'backgroundColor', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'fullscreen', 'html'],
-    
-    'toolbarButtonsXS': ['paragraphFormat', 'fontSize', 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'color', 'backgroundColor', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'fullscreen', 'html'],
-    'toolbarButtonsSM': ['paragraphFormat', 'fontSize', 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'color', 'backgroundColor', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'fullscreen', 'html'],
-    'toolbarButtonsMD': ['paragraphFormat', 'fontSize', 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'color', 'backgroundColor', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'insertLink', 'insertImage', 'insertVideo', 'insertTable', 'quote', 'insertHR', 'undo', 'redo', 'clearFormatting', 'selectAll', 'fullscreen', 'html'],
-    
-    'paragraphFormat': {
-        'N': 'Normal',
-        'H1': 'Heading 1', 
-        'H2': 'Heading 2',
-        'H3': 'Heading 3',
-        'H4': 'Heading 4',
-        'H5': 'Heading 5',
-        'H6': 'Heading 6'
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-    'height': '100vh',
-    'width': '100%',
-    'toolbarSticky': False,
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
 }
 
-FROALA_UPLOAD_PATH = 'uploads/froala_editor/images/'
+#STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+MEDIA_URL = '/media/'
+#MEDIA_ROOT = BASE_DIR / 'media'
+
+
+CKEDITOR_5_UPLOAD_PATH = "django_ckeditor_5/"
+
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': [
+            'heading', '|', 'bold', 'italic', 'fontColor', 'fontBackgroundColor', '|',
+            'link', 'bulletedList', 'numberedList', '|',
+            'imageUpload', 'insertTable', 'mediaEmbed', '|',
+            'undo', 'redo','|','sourceEditing'
+        ],
+        
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', '|', 'imageStyle:alignLeft',
+                'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'linkImage'
+            ],
+            'styles': ['full', 'alignLeft', 'alignCenter', 'alignRight']
+        },
+        'table': {
+            'contentToolbar': [
+                'tableColumn', 'tableRow', 'mergeTableCells',
+                'tableProperties', 'tableCellProperties'
+            ]
+        },
+        
+        'heading': {
+            'options': [
+                { 'model': 'paragraph', 'title': 'P', 'class': 'ck-heading_paragraph',},
+                { 'model': 'heading1', 'view': 'h1', 'title': 'H1', 'class': 'ck-heading_heading1' },
+                { 'model': 'heading2', 'view': 'h2', 'title': 'H2', 'class': 'ck-heading_heading2' },
+                { 'model': 'heading3', 'view': 'h3', 'title': 'H3', 'class': 'ck-heading_heading3' },
+                { 'model': 'heading4', 'view': 'h4', 'title': 'H4', 'class': 'ck-heading_heading4' },
+            ]
+        }
+    }
+
+}
+
+CKEDITOR_5_CUSTOM_CSS = 'css/ckeditor5_styles.css'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -179,7 +222,13 @@ DEFAULT_FROM_EMAIL = 'admin@example.com'
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
-        "LOCATION": BASE_DIR / "cache",
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get('REDIS_LOCATION'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "SSL": True,
+            
+        }
     }
 }
+

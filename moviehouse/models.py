@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
-from froala_editor.fields import FroalaField
+from django_ckeditor_5.fields import CKEditor5Field
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 def generate_slug(instance):
@@ -16,8 +17,9 @@ def generate_slug(instance):
   
 class Post(models.Model):
   title = models.CharField(max_length = 300)
-  featured_image = models.ImageField(upload_to = "featured/", null= True, blank = True)
-  content = FroalaField()
+  featured_image = models.ImageField(upload_to = "featured/", null= True, blank = True,)
+  
+  content = CKEditor5Field('Content', config_name='default')
   meta_description = models.TextField(max_length = 250)
   slug = models.SlugField(max_length=300, null= True, blank = True, unique = True)
   

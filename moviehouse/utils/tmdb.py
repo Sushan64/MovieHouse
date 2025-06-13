@@ -9,7 +9,7 @@ HEADERS = {
     "Authorization": f"Bearer {settings.TMDB_API_KEY}"
 }
 
-def get_tmdb(url, cache_key, params=None, timeout=300):
+def get_tmdb(url, cache_key, params=None, timeout=3600):
 
   params_string = urlencode(params or {})
   key_source = f"{cache_key}-{params_string}" if params_string else cache_key
