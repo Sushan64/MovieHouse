@@ -15,7 +15,7 @@ urlpatterns =[
   path('logout/', views.custom_logout, name='logout'),
 
   #Password Reset Form Configuration
-      path('password_reset/', views.PasswordResetView.as_view(template_name="registration/reset_password.html"), name='password_reset'),
+      path('password_reset/', views.PasswordResetView.as_view(),name='password_reset'),
   
   path('password-reset/done/', views.PasswordResetDoneView.as_view(template_name="registration/reset_password_done.html"), name='password_reset_done'),
   

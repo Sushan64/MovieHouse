@@ -320,6 +320,10 @@ def custom_404_view(request, exception):
 #Forget Password Security Setup
 #Default django PasswordResetView
 class PasswordResetView(auth_views.PasswordResetView):
+    template_name = 'registration/reset_password.html'
+    html_email_template_name = 'registration/reset_password_email.html'
+    email_template_name = 'registration/reset_password_email.html'
+  
     # Default function of the class
     def form_valid(self, form):
         self.request.session['pwd_reset_step'] = 'email_sent' #Adding a New key on request.session dict with value 'email_sent'
